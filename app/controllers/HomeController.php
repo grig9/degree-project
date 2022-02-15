@@ -27,9 +27,12 @@ class HomeController
   public function users() 
   {
     
+    $result = $this->db->getAll('users');
+
     echo $this->templates->render('test/users', 
       [
-        'title' => 'Users'
+        'title' => 'Users',
+        'users' => $result,
       ]
     );
   }
