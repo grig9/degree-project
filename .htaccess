@@ -1,0 +1,7 @@
+AddDefaultCharset utf-8
+
+Options +FollowSymLinks
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule .* /public/index.php [L]
