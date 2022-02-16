@@ -11,6 +11,7 @@ class ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
         '60799491728b879e74601d83e38b2cad' => __DIR__ . '/..' . '/illuminate/collections/helpers.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
         '3917c79c5052b270641b5a200963dbc2' => __DIR__ . '/..' . '/kint-php/kint/init.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
@@ -54,6 +55,7 @@ class ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2
         'F' => 
         array (
             'FastRoute\\' => 10,
+            'Faker\\' => 6,
         ),
         'D' => 
         array (
@@ -118,8 +120,8 @@ class ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/macroable',
-            1 => __DIR__ . '/..' . '/illuminate/collections',
+            0 => __DIR__ . '/..' . '/illuminate/collections',
+            1 => __DIR__ . '/..' . '/illuminate/macroable',
             2 => __DIR__ . '/..' . '/illuminate/support',
         ),
         'Illuminate\\Contracts\\' => 
@@ -129,6 +131,10 @@ class ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2
         'FastRoute\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+        ),
+        'Faker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/fakerphp/faker/src/Faker',
         ),
         'Doctrine\\Inflector\\' => 
         array (
@@ -168,6 +174,16 @@ class ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'J' => 
+        array (
+            'JasonGrimes' => 
+            array (
+                0 => __DIR__ . '/..' . '/jasongrimes/paginator/src',
+            ),
+        ),
+    );
+
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
@@ -182,6 +198,7 @@ class ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2::$classMap;
 
         }, null, ClassLoader::class);

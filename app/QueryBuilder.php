@@ -27,6 +27,20 @@ class QueryBuilder
     return $sth->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function getAllPaginator($table, $setpaging, $page) 
+  {
+    $select = $this->queryFactory->newSelect();
+    $select->cols(['*'])
+           ->from($table)
+           ->setPaging($setpaging)
+           ->page($page ?? 1);
+
+    $sth = $this->pdo->prepare($select->getStatement());
+    $sth->execute($select->getBindValues());
+
+    return $sth->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function getOneById($table, $id) 
   {
     $select = $this->queryFactory->newSelect();

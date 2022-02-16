@@ -7,6 +7,8 @@ use App\exceptions\AccountIsBlockException;
 use League\Plates\Engine;
 use App\database\Connection;
 use Delight\Auth\Auth;
+use Faker\Factory;
+use JasonGrimes\Paginator;
 
 class HomeController 
 {
@@ -24,10 +26,46 @@ class HomeController
   }
 
 
+  public function paginator($params)
+  {
+    $posts = $this->db->getAllPaginator('posts', 5, $params['id']);
+    // $posts = $this->db->getAll('posts');
+    
+    // d($posts);die;
+    $totalItems = 100;
+    $itemsPerPage = 5;
+    $currentPage = $params['id'];
+    $urlPattern = '/paginator/page/(:num)';
+
+    $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+    
+    // $paginator->getPages();
+    // d($paginator);die;
+    echo $this->templates->render('page', 
+    [
+      'title' => 'Paginator',
+      'paginator' => $paginator
+    ]
+  );
+  }
+
+  public function fake_posts()
+  {
+    // $faker = Factory::create();
+
+    // for ($i = 0; $i < 30; $i++) {
+    //   $this->db->insert('posts',
+    //     [
+    //       'title' => $faker->word(3, true),
+    //       'content' => $faker->text(),
+    //     ]
+    //   );
+    // }
+  }
+
   public function users() 
   {
-    
-    $result = $this->db->getAll('users');
+    $result = $this->db->getAll('users2');
 
     echo $this->templates->render('test/users', 
       [

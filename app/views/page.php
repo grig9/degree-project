@@ -9,6 +9,8 @@ if(isset($_SESSION['flash_messages']) && !empty($_SESSION['flash_messages'])) {
 ;?>
 
 
+
+
 <div class="container">
   <div class="row">
     <div class="col mt-3">
@@ -21,3 +23,7 @@ if(isset($_SESSION['flash_messages']) && !empty($_SESSION['flash_messages'])) {
     </div>
   </div>
 </div>
+
+<nav aria-label="Page navigation example">
+  <?php echo $paginator; ?>
+</nav>

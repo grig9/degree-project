@@ -4,6 +4,7 @@ if( !session_id() ) @session_start();
 
 require '../vendor/autoload.php';
 
+
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
   $r->addRoute('GET', '/', ['App\controllers\HomeController', 'index']);
   $r->addRoute('GET', '/about', ['App\controllers\HomeController', 'about']);
@@ -11,6 +12,8 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
   $r->addRoute('GET', '/contacts', ['App\controllers\HomeController', 'contacts']);
   $r->addRoute('GET', '/add/book', ['App\controllers\HomeController', 'add_book']);
   $r->addRoute('GET', '/registration/form', ['App\controllers\HomeController', 'registration_form']);
+  $r->addRoute('GET', '/fakeposts', ['App\controllers\HomeController', 'fake_posts']);
+  $r->addRoute('GET', '/paginator/page/{id:\d+}', ['App\controllers\HomeController', 'paginator']);
 
   $r->addRoute('POST', '/registration', ['App\controllers\HomeController', 'registration']);
   $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'email_verification']);
