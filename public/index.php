@@ -3,7 +3,36 @@
 if( !session_id() ) @session_start();
 
 require '../vendor/autoload.php';
+use League\Plates\Engine;
+use Delight\Auth\Auth;
 
+$builder = new DI\ContainerBuilder();
+$builder->addDefinitions([
+  Engine::class => function() {
+    return new Engine('../app/views');
+  },
+
+  PDO::class => function() {
+      $database_name = "app";
+      $username = "root";
+      $password = "";
+      $connection = "mysql:host=localhost";
+      $charset = 'utf8';
+
+    return new PDO(
+      "$connection;dbname=$database_name;charset=$charset", 
+      $username, 
+      $password
+    );
+  },
+
+  Auth::class => function($container) {
+    return new Auth($container->get('PDO'));
+  }
+
+
+]);
+$container = $builder->build();
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
   $r->addRoute('GET', '/', ['App\controllers\HomeController', 'index']);
@@ -55,8 +84,8 @@ switch ($routeInfo[0]) {
   case FastRoute\Dispatcher::FOUND:
       $handler = $routeInfo[1];
       $vars = $routeInfo[2];
-      // ... call $handler with $vars
-      $controller = new $handler[0]();
-      call_user_func([$controller, $handler[1]], $vars);
+      
+      
+      $container->call($handler, $vars);
       break;
 }

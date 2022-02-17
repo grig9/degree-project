@@ -9,7 +9,8 @@
     "eoghanobrien/php-simple-mail": "^1.7",
     "kint-php/kint": "^4.1",
     "fakerphp/faker": "^1.19",
-    "jasongrimes/paginator": "^1.0"
+    "jasongrimes/paginator": "^1.0",
+    "php-di/php-di": "^6.3"
   },
 
   "autoload": {

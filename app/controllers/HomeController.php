@@ -5,31 +5,29 @@ namespace App\controllers;
 use App\exceptions\NotEnoughMoneyException;
 use App\exceptions\AccountIsBlockException;
 use League\Plates\Engine;
-use App\database\Connection;
 use Delight\Auth\Auth;
 use Faker\Factory;
 use JasonGrimes\Paginator;
+use App\QueryBuilder;
 
 class HomeController 
 {
-  private $config; 
   private $db;
   private $templates;
   private $auth;
 
-  public function __construct() 
+  public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth) 
   {
-    $this->config = include __DIR__ . "/../database/config.php";
-    $this->db = include __DIR__ . "/../database/start.php";
-    $this->templates = new Engine('../app/views');
-    $this->auth = new Auth(Connection::make($this->config['database']));
+    $this->db = $qb;
+    $this->templates = $engine;
+    $this->auth = $auth;
   }
 
-
-  public function paginator($params)
+  public function paginator($id)
   {
     $itemsPerPage = 5;
-    $currentPage = $params['id'];
+    // $currentPage = $params['id'];
+    $currentPage = $id;
     $totalItems = $this->db->getAllCount('posts');
     $urlPattern = '/paginator/page/(:num)';
 
@@ -72,8 +70,8 @@ class HomeController
     );
   }
 
-  
-  public function index($vars) 
+
+  public function index() 
   {
     $result = $this->db->getAll('books');
     echo $this->templates->render('homepage', 
