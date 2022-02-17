@@ -28,39 +28,36 @@ class HomeController
 
   public function paginator($params)
   {
-    $posts = $this->db->getAllPaginator('posts', 5, $params['id']);
-    // $posts = $this->db->getAll('posts');
-    
-    // d($posts);die;
-    $totalItems = 100;
     $itemsPerPage = 5;
     $currentPage = $params['id'];
+    $totalItems = $this->db->getAllCount('posts');
     $urlPattern = '/paginator/page/(:num)';
+
+    $posts = $this->db->getAllPaginator('posts', $itemsPerPage, $currentPage);
 
     $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
     
-    // $paginator->getPages();
-    // d($paginator);die;
-    echo $this->templates->render('page', 
+    echo $this->templates->render('paginator', 
     [
       'title' => 'Paginator',
-      'paginator' => $paginator
+      'paginator' => $paginator,
+      'posts' => $posts
     ]
   );
   }
 
   public function fake_posts()
   {
-    // $faker = Factory::create();
+    $faker = Factory::create();
 
-    // for ($i = 0; $i < 30; $i++) {
-    //   $this->db->insert('posts',
-    //     [
-    //       'title' => $faker->word(3, true),
-    //       'content' => $faker->text(),
-    //     ]
-    //   );
-    // }
+    for ($i = 0; $i < 100; $i++) {
+      $this->db->insert('posts',
+        [
+          'title' => $faker->word(3, true),
+          'content' => $faker->paragraphs(10, true),
+        ]
+      );
+    }
   }
 
   public function users() 
@@ -227,6 +224,7 @@ class HomeController
     echo $this->templates->render('page', 
       [
         'title' => $result['title'],
+        'books' => $result,
       ]
     );
   }

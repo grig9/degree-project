@@ -1,4 +1,4 @@
-<html>
+<html class="min-vh-100">
   <head lang="en">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,7 +7,7 @@
     
     <title><?=$this->e($title);?></title>
   </head>
-  <body>
+  <body class="pb-5 d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">My book store</a>
@@ -39,9 +39,11 @@
       </div>
     </nav>
  
-    <?=$this->section('content')?>
+    <div class="wrapper flex-grow-1">
+      <?=$this->section('content')?>
+    </div>
 
-    <footer class="fixed-bottom bg-light">
+    <footer class="footer bg-light">
       <div class="container-fluid">
         <div class="row">
             <div class="col my-3">
