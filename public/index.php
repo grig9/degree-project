@@ -5,6 +5,7 @@ if( !session_id() ) @session_start();
 require '../vendor/autoload.php';
 use League\Plates\Engine;
 use Delight\Auth\Auth;
+use Tamtamchik\SimpleFlash\Flash;
 
 $builder = new DI\ContainerBuilder();
 $builder->addDefinitions([
@@ -28,33 +29,49 @@ $builder->addDefinitions([
 
   Auth::class => function($container) {
     return new Auth($container->get('PDO'));
+  },
+
+  Flash::class => function() {
+    return new Flash();
   }
 
-
 ]);
+
 $container = $builder->build();
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-  $r->addRoute('GET', '/', ['App\controllers\HomeController', 'index']);
+  $r->addRoute('GET', '/', ['App\controllers\HomeController', 'login_form']);
   $r->addRoute('GET', '/about', ['App\controllers\HomeController', 'about']);
+
   $r->addRoute('GET', '/users', ['App\controllers\HomeController', 'users']);
-  $r->addRoute('GET', '/contacts', ['App\controllers\HomeController', 'contacts']);
-  $r->addRoute('GET', '/add/book', ['App\controllers\HomeController', 'add_book']);
+  $r->addRoute('GET', '/create-user-form', ['App\controllers\HomeController', 'create_user_form']);
+  $r->addRoute('POST', '/create-user', ['App\controllers\HomeController', 'create_user']);
+  $r->addRoute('GET', '/edit-user-form/{id:\d+}', ['App\controllers\HomeController', 'edit_user_form']);
+  $r->addRoute('POST', '/edit/user/{id:\d+}', ['App\controllers\HomeController', 'edit_user']);
+
+  $r->addRoute('GET', '/user/delete/{id:\d+}', ['App\controllers\HomeController', 'user_delete']);
+  $r->addRoute('GET', '/security-user/{id:\d+}', ['App\controllers\HomeController', 'security_form']);
+  $r->addRoute('POST', '/security/{id:\d+}', ['App\controllers\HomeController', 'security']);
+  
+
   $r->addRoute('GET', '/registration/form', ['App\controllers\HomeController', 'registration_form']);
   $r->addRoute('GET', '/fakeposts', ['App\controllers\HomeController', 'fake_posts']);
   $r->addRoute('GET', '/paginator/page/{id:\d+}', ['App\controllers\HomeController', 'paginator']);
 
   $r->addRoute('POST', '/registration', ['App\controllers\HomeController', 'registration']);
+  $r->addRoute('GET', '/registration_form', ['App\controllers\HomeController', 'registration_form']);
+  
   $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'email_verification']);
-  $r->addRoute('GET', '/login/form', ['App\controllers\HomeController', 'login_form']);
+  
+ 
   $r->addRoute('POST', '/login', ['App\controllers\HomeController', 'login']);
   
+  
 
-  $r->addRoute('POST', '/create/book', ['App\controllers\HomeController', 'create']);
   // {id} must be a number (\d+)
   $r->addRoute('GET', '/show/{id:\d+}', ['App\controllers\HomeController', 'show']);
   $r->addRoute('GET', '/delete/book/{id:\d+}', ['App\controllers\HomeController', 'delete_by_id']);
-  $r->addRoute('GET', '/edit/book/{id:\d+}', ['App\controllers\HomeController', 'edit_book']);
+ 
   $r->addRoute('POST', '/update/book/{id:\d+}', ['App\controllers\HomeController', 'update_by_id']);
   // The /{title} suffix is optional
   $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');

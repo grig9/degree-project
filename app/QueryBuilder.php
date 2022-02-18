@@ -57,18 +57,30 @@ class QueryBuilder
     $select = $this->queryFactory->newSelect();
     $select->cols(['*'])
            ->from($table)
-           ->where('id =  :id');
+           ->where('id =  :id')
+           ->bindValue('id', $id);
 
     $sth = $this->pdo->prepare($select->getStatement());
-
-    $select->bindValues(['id'=> $id]);
 
     $sth->execute($select->getBindValues());
 
     return $sth->fetch(PDO::FETCH_ASSOC);
   }
 
-  
+  public function getOneByEmail($table,  $email) 
+  {
+    $select = $this->queryFactory->newSelect();
+    $select->cols(['*'])
+           ->from($table)
+           ->where('email = :email')
+           ->bindValue('email', $email);
+
+    $sth = $this->pdo->prepare($select->getStatement());
+    
+    $sth->execute($select->getBindValues());
+    
+    return $sth->fetch(PDO::FETCH_ASSOC);
+  }
 
   public function insert($table, $data) 
   {

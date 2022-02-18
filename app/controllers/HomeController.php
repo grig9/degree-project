@@ -9,24 +9,27 @@ use Delight\Auth\Auth;
 use Faker\Factory;
 use JasonGrimes\Paginator;
 use App\QueryBuilder;
+use App\controllers\Redirect;
+use Tamtamchik\SimpleFlash\Flash;
 
 class HomeController 
 {
   private $db;
   private $templates;
   private $auth;
+  public $flash;
 
-  public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth) 
+  public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Flash $flash) 
   {
     $this->db = $qb;
     $this->templates = $engine;
     $this->auth = $auth;
+    $this->flash = $flash;
   }
 
   public function paginator($id)
   {
     $itemsPerPage = 5;
-    // $currentPage = $params['id'];
     $currentPage = $id;
     $totalItems = $this->db->getAllCount('posts');
     $urlPattern = '/paginator/page/(:num)';
@@ -62,10 +65,12 @@ class HomeController
   {
     $result = $this->db->getAll('users2');
 
-    echo $this->templates->render('test/users', 
+    echo $this->templates->render('layout/users', 
       [
         'title' => 'Users',
         'users' => $result,
+        'flash_output' => $this->flash->display(),
+
       ]
     );
   }
@@ -82,26 +87,47 @@ class HomeController
     );
   }
 
+  public function registration_form() 
+  {
+    echo $this->templates->render('layout/registration_form', 
+      [
+        'title' => 'Registration form',
+        'flash_output' => $this->flash->display(),
+      ]
+    );
+  }
+
   public function registration() 
   {
+    // d($_POST);
     try {
-      $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['username'], function ($selector, $token) {
+      $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['username'] = NULL, function ($selector, $token) {
           echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email)';
       });
-  
+
       echo 'We have signed up a new user with the ID ' . $userId;
+      $this->flash->success('Вы успешно зарегестрировались.');
+      Redirect::to("/");
     }
     catch (\Delight\Auth\InvalidEmailException $e) {
-        die('Invalid email address');
+        // die('Invalid email address');
+        $this->flash->error('Неверный email');
+        Redirect::to("/registration_form");
     }
     catch (\Delight\Auth\InvalidPasswordException $e) {
-        die('Invalid password');
+        // die('Invalid password');
+        $this->flash->error('Неверный пароль');
+        Redirect::to("/registration_form");
     }
     catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        die('User already exists');
+        // die('User already exists');
+        $this->flash->error('Пользователь уже существует');
+        Redirect::to("/registration_form");
     }
     catch (\Delight\Auth\TooManyRequestsException $e) {
-        die('Too many requests');
+        // die('Too many requests');
+        $this->flash->error('Слишком много запросов на рег');
+        Redirect::to("/registration_form");
     }
   }
 
@@ -128,11 +154,10 @@ class HomeController
 
   public function login_form() 
   {
-    echo $this->templates->render('form', 
+    echo $this->templates->render('layout/login_form', 
       [
         'title' => 'Login',
-        'button' => 'Login',
-        'action' => '/login'
+        'flash_output' => $this->flash->display(),
       ]
     );
   }
@@ -143,7 +168,7 @@ class HomeController
       $this->auth->login($_POST['email'], $_POST['password']);
   
       echo 'User is logged in';
-      header("Location: /");
+      Redirect::to("/users");
     }
     catch (\Delight\Auth\InvalidEmailException $e) {
         die('Wrong email address');
@@ -157,17 +182,6 @@ class HomeController
     catch (\Delight\Auth\TooManyRequestsException $e) {
         die('Too many requests');
     }
-  }
-
-  public function registration_form() 
-  {
-    echo $this->templates->render('form', 
-      [
-        'title' => 'Registration form',
-        'button' => 'Registration',
-        'action' => '/registration'
-      ]
-    );
   }
 
   public function about() 
@@ -204,19 +218,9 @@ class HomeController
     }
   }
 
-  public function contacts() 
-  {
-    echo $this->templates->render('page', 
-      [
-        'title' => 'Contacts',
-      ]
-    );
-  }
 
-  public function show($params) 
+  public function show($id) 
   {
-    $id = $params['id'];
-
     $result = $this->db->getOneById('books', $id);
 
     echo $this->templates->render('page', 
@@ -227,66 +231,106 @@ class HomeController
     );
   }
 
-  public function add_book() 
+  public function security_form($id)
   {
-    echo $this->templates->render('add_book', 
+    // 'flash_output' => $this->flash->display(),
+    $result = $this->db->getOneById('users2', $id);
+
+    echo $this->templates->render('layout/security_form', 
       [
-        'title' => 'Add book',
+        'title' => 'Security',
+        'user' => $result,
       ]
     );
   }
 
-  public function create() 
+  public function create_user_form() 
   {
-    $title = $_POST['title'];
-    $author = $_POST['author'];
-    $price = $_POST['price'];
+    echo $this->templates->render('layout/create_user_form', 
+      [
+        'title' => 'Create new user',
+        'flash_output' => $this->flash->display(),
+      ]
+    );
+  }
 
-    $this->db->insert('books', [ 
-      'title' => $title,
-      'author' => $author,
-      'price' => $price
+  public function create_user() 
+  {
+    $name = $_POST['name'];
+    $position = $_POST['position'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $status = $_POST['status'];
+    $image_name = $_POST['image_name'];
+    $vk = $_POST['vk'];
+    $telegram = $_POST['telegram'];
+    $instagram = $_POST['instagram'];
+
+    $user = $this->db->getOneById('users2', 91);
+
+    $userByEmail = $this->db->getOneByEmail('users2', $email);
+
+
+    if(!empty($userByEmail)) {     
+      $this->flash->error('Пользователь с таким email существует! <br>Пожалуйста, ведите новый email');
+      Redirect::to("/create-user-form");
+    } 
+
+    $this->db->insert('users2', [ 
+      'name' => $name,
+      'position' => $position,
+      'phone' => $phone,
+      'address' => $address,
+      'email' => $email,
+      'password' => $password,
+      'status' => $status,
+      'image_name' => $image_name,
+      'vk' => $vk,
+      'telegram' => $telegram,
+      'instagram' => $instagram,
+      'role' => 'user'
      ]);
-    header('Location: /');
+    
+    Redirect::to("/users");
     exit();
   }
 
-  public function edit_book($params) 
+  public function edit_user_form($id) 
   {
-    $id = $params['id'];
+    $result = $this->db->getOneById('users2', $id);
 
-    $result = $this->db->getOneById('books', $id);
-
-    echo $this->templates->render('edit_book', 
+    echo $this->templates->render('layout/edit_user_form', 
       [
-        'title' => 'Edit book',
-        'book' => $result,
+        'title' => 'Edit user',
+        'user' => $result,
       ]
     );
   }
 
-  public function update_by_id($params)
+  public function edit_user($id)
   {
-    $id = $params['id'];
- 
     $data = [ 
-      'title' => $_POST['title'],
-      'author' => $_POST['author'],
-      'price' => $_POST['price']
+      'name' => $_POST['name'],
+      'position' => $_POST['position'],
+      'phone' => $_POST['phone'],
+      'address' => $_POST['address'],
     ];
   
-    $this->db->updateById('books', $data, $id);
-  
-    header('Location: /');
+    $this->db->updateById('users2', $data, $id);
+    
+    $this->flash->success('Профиль успешно обновлен!');
+    Redirect::to("/users");
     exit();
   }
 
-  public function delete_by_id($params)
+  public function user_delete($id)
   {
-    $id = $params['id'];
+    $this->db->deleteById('users2', $id);
 
-    $this->db->deleteById('books', $id);
-    header('Location: /');
+    $this->flash->success('Профиль успешно удален!');
+    Redirect::to("/users");
     exit();
   }
 
