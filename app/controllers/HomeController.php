@@ -278,19 +278,6 @@ class HomeController
     }
   }
 
-
-  public function show($id) 
-  {
-    $result = $this->db->getOneById('books', $id);
-
-    echo $this->templates->render('page', 
-      [
-        'title' => $result['title'],
-        'books' => $result,
-      ]
-    );
-  }
-
   public function security_form($id)
   {
     // 'flash_output' => $this->flash->display(),
@@ -332,6 +319,12 @@ class HomeController
 
     $userByEmail = $this->db->getOneByEmail('users2', $email);
 
+    if(!empty($userByEmail)) {     
+      $this->flash->error('Пользователь с таким email существует! <br>Пожалуйста, ведите новый email');
+      Redirect::to("/create-user-form");
+      exit();
+    } 
+
     try {
       // $userId = $auth->admin()->createUser($_POST['email'], $_POST['password'], $_POST['username']);
       $this->db->insert('users2', [ 
@@ -349,7 +342,7 @@ class HomeController
         'role' => 'user'
        ]);
   
-      $this->flash->success('We have signed up a new user with the ID ' . $userId);
+      $this->flash->success('Мы успешно добавили нового пользователя с ID ' . $userId);
       Redirect::to("/users");
       exit();
     }
@@ -370,12 +363,6 @@ class HomeController
       // die('User already exists');
     }
 
-
-    if(!empty($userByEmail)) {     
-      $this->flash->error('Пользователь с таким email существует! <br>Пожалуйста, ведите новый email');
-      Redirect::to("/create-user-form");
-    } 
-
   }
 
   public function is_Admin()
@@ -387,27 +374,22 @@ class HomeController
     }
   }
 
+
+  public function checkLoggedInAndRedirect()
+  {
+    if(!$this->auth->check())
+    {
+      $this->flash->success('Вы не авторизированы!');
+      Redirect::to("/");
+    }
+  }
+
   public function edit_user_form(int $id) 
   { 
-    
-    if($this->is_Admin()) {
-      try {
-        $userId = $this->auth->admin()->createUser("safas@asdfasd.ru", "1", NULL);
-    
-        echo 'We have signed up a new user with the ID ' . $userId;
-      }
-      catch (\Delight\Auth\InvalidEmailException $e) {
-          die('Invalid email address');
-      }
-    } 
-    
-    echo "asldfjkslad";
-
-    exit();
-
+       
     $currenAuthUserId = $this->auth->id();
    
-    if($currenAuthUserId === $id) 
+    if($this->is_Admin() or $currenAuthUserId === $id) 
     {
       $result = $this->db->getOneById('users2', $id);
 
@@ -425,7 +407,7 @@ class HomeController
     }
   }
 
-  public function edit_user($id)
+  public function edit_user(int $id)
   {
     $data = [ 
       'name' => $_POST['name'],
@@ -441,11 +423,26 @@ class HomeController
     exit();
   }
 
-  public function user_delete($id)
+  public function user_delete(int $id)
   {
-    $this->db->deleteById('users2', $id);
+    $this->checkLoggedInAndRedirect();
 
-    $this->flash->success('Профиль успешно удален!');
+    if($this->is_Admin()) {
+
+      $this->db->deleteById('users2', $id);
+      $this->flash->success('Профиль успешно удален!');
+      Redirect::to("/users");
+    }
+    // if(this->auth is admin or authUserId === $userId) 
+    if($this->auth->getUserId() === $id) {
+      $this->db->deleteById('users2', $id);
+
+      $this->flash->success('Профиль успешно удален!');
+      Redirect::to("/users");
+    }
+  
+
+    $this->flash->success('Вы не можете редактировать профиль!');
     Redirect::to("/users");
     exit();
   }

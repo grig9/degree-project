@@ -54,9 +54,9 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
   $r->addRoute('GET', '/create-user-form', ['App\controllers\HomeController', 'create_user_form']);
   $r->addRoute('POST', '/create-user', ['App\controllers\HomeController', 'create_user']);
   $r->addRoute('GET', '/edit-user-form/{id:\d+}', ['App\controllers\HomeController', 'edit_user_form']);
-  $r->addRoute('POST', '/edit/user/{id:\d+}', ['App\controllers\HomeController', 'edit_user']);
+  $r->addRoute('POST', '/edit_user/{id:\d+}', ['App\controllers\HomeController', 'edit_user']);
 
-  $r->addRoute('GET', '/user/delete/{id:\d+}', ['App\controllers\HomeController', 'user_delete']);
+  $r->addRoute('GET', '/user-delete/{id:\d+}', ['App\controllers\HomeController', 'user_delete']);
   $r->addRoute('GET', '/security-user/{id:\d+}', ['App\controllers\HomeController', 'security_form']);
   $r->addRoute('POST', '/security/{id:\d+}', ['App\controllers\HomeController', 'security']);
   
