@@ -1,4 +1,4 @@
-<?php $this->layout('templates/template', ['title' => $title]) ?>
+<?php $this->layout('templates/template', ['title' => $title, 'login_state' => $login_state]) ?>
 
 <main id="js-page-content" role="main" class="page-content mt-3">
         <div class="subheader">

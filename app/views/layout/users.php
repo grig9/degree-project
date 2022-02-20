@@ -1,4 +1,4 @@
-<?php $this->layout('templates/template', ['title' => $title]) ?>
+<?php $this->layout('templates/template', ['title' => $title, 'login_state' => $login_state]) ?>
 
 <main id="js-page-content" role="main" class="page-content mt-3">
 
@@ -11,7 +11,8 @@
     </div>
     <div class="row">
         <div class="col-xl-12">
-            <a class="btn btn-success" href="/create-user-form">Добавить</a>
+            <!-- Add button -->
+            <?php echo ($is_admin) ? '<a class="btn btn-success" href="/create-user-form">Добавить</a>' : '' ;?>
 
             <div class="border-faded bg-faded p-3 mb-g d-flex mt-3">
                 <input type="text" id="js-filter-contacts" name="filter-contacts" class="form-control shadow-inset-2 form-control-lg" placeholder="Найти пользователя">
@@ -33,34 +34,55 @@
             <div id="c_1" class="card border shadow-0 mb-g shadow-sm-hover" data-filter-tags="<?=strtolower($user['name']) ?>">
                 <div class="card-body border-faded border-top-0 border-left-0 border-right-0 rounded-top">
                     <div class="d-flex flex-row align-items-center">
-                        <span class="status status-success mr-3">
-                            <span class="rounded-circle profile-image d-block " style="background-image:url('app/views/layout/img/demo/avatars/<?=$user['image_name'] ?>'); background-size: cover;"></span>
+                        <span class="status status-<?php if($user['status'] === 'online') {
+                                                            echo "success";
+                                                        } elseif($user['status'] === 'away') {
+                                                            echo "warning";
+                                                        } elseif($user['status'] === 'not_disturb') {
+                                                            echo "danger";
+                                                        } else {
+                                                            echo "secondary";
+                                                        }
+                                                    ;?> mr-3">
+                            <span class="rounded-circle profile-image d-block " style="background-image:url('../app/views/layout/img/demo/avatars/<?=$user['image_name'] ?>'); background-size: cover;"></span>
                         </span>
                         <div class="info-card-text flex-1">
-                            <a href="javascript:void(0);" class="fs-xl text-truncate text-truncate-lg text-info" data-toggle="dropdown" aria-expanded="false">
-                                <?=$user['name'] ?>
-                                <i class="fal fas fa-cog fa-fw d-inline-block ml-1 fs-md"></i>
-                                <i class="fal fa-angle-down d-inline-block ml-1 fs-md"></i>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/edit-user-form/<?=$user['id']?>">
-                                    <i class="fa fa-edit"></i>
-                                Редактировать</a>
-                                <a class="dropdown-item" href="/security-user/<?=$user['id']?>">
-                                    <i class="fa fa-lock"></i>
-                                Безопасность</a>
-                                <a class="dropdown-item" href="/status/user/<?=$user['id']?>">
-                                    <i class="fa fa-sun"></i>
-                                Установить статус</a>
-                                <a class="dropdown-item" href="/media/user/<?=$user['id']?>">
-                                    <i class="fa fa-camera"></i>
-                                    Загрузить аватар
+
+                            <?php if( $is_admin or ($auth_id === $user['id']) )  :?>
+                                <a href="page-profile/<?= $user['id'] ;?>" class="fs-xl text-truncate text-truncate-lg text-info">
+                                    <?=$user['name'] ?>
                                 </a>
-                                <a href="/user/delete/<?=$user['id']?>" class="dropdown-item" onclick="return confirm('are you sure?');">
-                                    <i class="fa fa-window-close"></i>
-                                    Удалить
+                                <a href="#" class="fs-xl text-truncate text-truncate-lg text-info" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fal fas fa-cog fa-fw d-inline-block ml-1 fs-md"></i>
+                                    <i class="fal fa-angle-down d-inline-block ml-1 fs-md"></i>
                                 </a>
-                            </div>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/edit-user-form/<?=$user['id']?>">
+                                        <i class="fa fa-edit"></i>
+                                    Редактировать</a>
+                                    <a class="dropdown-item" href="/security-user/<?=$user['id']?>">
+                                        <i class="fa fa-lock"></i>
+                                    Безопасность</a>
+                                    <a class="dropdown-item" href="/status-user/<?=$user['id']?>">
+                                        <i class="fa fa-sun"></i>
+                                    Установить статус</a>
+                                    <a class="dropdown-item" href="/media-user/<?=$user['id']?>">
+                                        <i class="fa fa-camera"></i>
+                                        Загрузить аватар
+                                    </a>
+                                    <a href="/user/delete/<?=$user['id']?>" class="dropdown-item" onclick="return confirm('are you sure?');">
+                                        <i class="fa fa-window-close"></i>
+                                        Удалить
+                                    </a>
+                                </div>
+                            <?php else: ?>
+                                <!-- Name php -->
+                                <a href="page-profile/<?= $user['id'] ;?>" class="fs-xl text-truncate text-truncate-lg text-info">
+                                    <?= $user['name'] ;?> 
+                                </a>
+                                            
+                            <?php endif ;?>
+
                             <span class="text-truncate text-truncate-xl"><?=$user['position'] ?></span>
                         </div>
                         <button class="js-expand-btn btn btn-sm btn-default d-none" data-toggle="collapse" data-target="#c_1 > .card-body + .card-body" aria-expanded="false">

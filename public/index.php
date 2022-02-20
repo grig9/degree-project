@@ -43,6 +43,13 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
   $r->addRoute('GET', '/', ['App\controllers\HomeController', 'login_form']);
   $r->addRoute('GET', '/about', ['App\controllers\HomeController', 'about']);
 
+  $r->addRoute('GET', '/logout', ['App\controllers\HomeController', 'logout']);
+  $r->addRoute('GET', '/status-user/{id:\d+}', ['App\controllers\HomeController', 'status_form']);
+
+  $r->addRoute('GET', '/page-profile/{id:\d+}', ['App\controllers\HomeController', 'page_profile']);
+
+  
+
   $r->addRoute('GET', '/users', ['App\controllers\HomeController', 'users']);
   $r->addRoute('GET', '/create-user-form', ['App\controllers\HomeController', 'create_user_form']);
   $r->addRoute('POST', '/create-user', ['App\controllers\HomeController', 'create_user']);

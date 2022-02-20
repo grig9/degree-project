@@ -65,24 +65,31 @@ class HomeController
   {
     $result = $this->db->getAll('users2');
 
+    // $this->auth->admin()->addRoleForUserById(2, \Delight\Auth\Role::ADMIN);
+    // d($this->auth->id());die;
+
     echo $this->templates->render('layout/users', 
       [
         'title' => 'Users',
         'users' => $result,
         'flash_output' => $this->flash->display(),
-
+        'login_state' => $this->login_state(),
+        'is_admin' => $this->auth->hasRole(\Delight\Auth\Role::ADMIN),
+        'auth_id' => $this->auth->id(),
       ]
     );
   }
 
-
-  public function index() 
+  public function page_profile($id) 
   {
-    $result = $this->db->getAll('books');
-    echo $this->templates->render('homepage', 
+    $result = $this->db->getOneById('users2', $id);
+
+    echo $this->templates->render('layout/page_profile', 
       [
-        'title' => 'This is a book store',
-        'books' => $result,
+        'title' => 'Профиль',
+        'user' => $result,
+        'flash_output' => $this->flash->display(),
+        'login_state' => $this->login_state(),
       ]
     );
   }
@@ -101,9 +108,7 @@ class HomeController
   {
     // d($_POST);
     try {
-      $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['username'] = NULL, function ($selector, $token) {
-          echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email)';
-      });
+      $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['username'] = NULL);
 
       echo 'We have signed up a new user with the ID ' . $userId;
       $this->flash->success('Вы успешно зарегестрировались.');
@@ -164,24 +169,79 @@ class HomeController
 
   public function login() 
   {
+    if (isset($_POST['remember']) == 1) {
+      // keep logged in for one year
+      $rememberDuration = (int) (60 * 60 * 24 * 365.25);
+    }
+    else {
+      // do not keep logged in after session ends
+      $rememberDuration = null;
+    }
+
     try {
-      $this->auth->login($_POST['email'], $_POST['password']);
+      $this->auth->login($_POST['email'], $_POST['password'], $rememberDuration);
   
       echo 'User is logged in';
+      $this->flash->success('<b>Поздравляю!</b> Вы успешно авторизировались.');
       Redirect::to("/users");
     }
     catch (\Delight\Auth\InvalidEmailException $e) {
-        die('Wrong email address');
+      $this->flash->error('Не верный эл.адрес!');
+      Redirect::to("/");
+        // die('Wrong email address');
     }
     catch (\Delight\Auth\InvalidPasswordException $e) {
-        die('Wrong password');
+      $this->flash->error('Не верный пароль!');
+      Redirect::to("/");
+        // die('Wrong password');
     }
     catch (\Delight\Auth\EmailNotVerifiedException $e) {
-        die('Email not verified');
+      $this->flash->error('Эл.адрес не подтвержден!');
+      Redirect::to("/");
+        // die('Email not verified');
     }
     catch (\Delight\Auth\TooManyRequestsException $e) {
         die('Too many requests');
     }
+  }
+
+  public function logout() 
+  {
+    try {
+      $this->auth->logOutEverywhere();
+      $this->flash->success("Вы вышли из системы");
+      Redirect::to("/");
+    }
+    catch (\Delight\Auth\NotLoggedInException $e) {
+      $this->flash->error("Вы не ввошли в систему");
+      Redirect::to("/");
+      // die('Not logged in');
+    }
+  }
+
+  public function login_state() 
+  {
+    if ($this->auth->isLoggedIn()) {
+      // echo 'User is signed in';
+      return true;
+    }
+    else {
+      // echo 'User is not signed in yet';
+      return false;
+    }
+  }
+
+  public function status_form($id)
+  {
+    $user = $this->db->getOneById('users2', $id);
+
+    echo $this->templates->render('layout/status', 
+      [
+        'title' => 'Статус',
+        'login_state' => $this->login_state(),
+        'user' => $user,
+      ]
+    );
   }
 
   public function about() 
@@ -240,6 +300,7 @@ class HomeController
       [
         'title' => 'Security',
         'user' => $result,
+        'login_state' => $this->login_state(),
       ]
     );
   }
@@ -250,6 +311,7 @@ class HomeController
       [
         'title' => 'Create new user',
         'flash_output' => $this->flash->display(),
+        'login_state' => $this->login_state(),
       ]
     );
   }
@@ -268,9 +330,45 @@ class HomeController
     $telegram = $_POST['telegram'];
     $instagram = $_POST['instagram'];
 
-    $user = $this->db->getOneById('users2', 91);
-
     $userByEmail = $this->db->getOneByEmail('users2', $email);
+
+    try {
+      // $userId = $auth->admin()->createUser($_POST['email'], $_POST['password'], $_POST['username']);
+      $this->db->insert('users2', [ 
+        'name' => $name,
+        'position' => $position,
+        'phone' => $phone,
+        'address' => $address,
+        'email' => $email,
+        'password' => $password,
+        'status' => $status,
+        'image_name' => $image_name,
+        'vk' => $vk,
+        'telegram' => $telegram,
+        'instagram' => $instagram,
+        'role' => 'user'
+       ]);
+  
+      $this->flash->success('We have signed up a new user with the ID ' . $userId);
+      Redirect::to("/users");
+      exit();
+    }
+    catch (\Delight\Auth\InvalidEmailException $e) {
+      $this->flash->error('Не верный ввод email');
+      Redirect::to("/create-user-form");
+        // die('Invalid email address');
+      exit();
+    }
+    catch (\Delight\Auth\InvalidPasswordException $e) {
+      $this->flash->error('Введите пароль');
+      Redirect::to("/create-user-form");
+        // die('Invalid password');
+    }
+    catch (\Delight\Auth\UserAlreadyExistsException $e) {
+      $this->flash->error('Пользователь с таким email уже существует! <br>Пожалуйста, ведите новый email');
+      Redirect::to("/create-user-form");
+      // die('User already exists');
+    }
 
 
     if(!empty($userByEmail)) {     
@@ -278,35 +376,53 @@ class HomeController
       Redirect::to("/create-user-form");
     } 
 
-    $this->db->insert('users2', [ 
-      'name' => $name,
-      'position' => $position,
-      'phone' => $phone,
-      'address' => $address,
-      'email' => $email,
-      'password' => $password,
-      'status' => $status,
-      'image_name' => $image_name,
-      'vk' => $vk,
-      'telegram' => $telegram,
-      'instagram' => $instagram,
-      'role' => 'user'
-     ]);
-    
-    Redirect::to("/users");
-    exit();
   }
 
-  public function edit_user_form($id) 
+  public function is_Admin()
   {
-    $result = $this->db->getOneById('users2', $id);
+    if ($this->auth->hasRole(\Delight\Auth\Role::ADMIN)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-    echo $this->templates->render('layout/edit_user_form', 
-      [
-        'title' => 'Edit user',
-        'user' => $result,
-      ]
-    );
+  public function edit_user_form(int $id) 
+  { 
+    
+    if($this->is_Admin()) {
+      try {
+        $userId = $this->auth->admin()->createUser("safas@asdfasd.ru", "1", NULL);
+    
+        echo 'We have signed up a new user with the ID ' . $userId;
+      }
+      catch (\Delight\Auth\InvalidEmailException $e) {
+          die('Invalid email address');
+      }
+    } 
+    
+    echo "asldfjkslad";
+
+    exit();
+
+    $currenAuthUserId = $this->auth->id();
+   
+    if($currenAuthUserId === $id) 
+    {
+      $result = $this->db->getOneById('users2', $id);
+
+      echo $this->templates->render('layout/edit_user_form', 
+        [
+          'title' => 'Edit user',
+          'user' => $result,
+          'login_state' => $this->login_state(),
+        ]
+      );
+    } else {
+      $this->flash->error("Вы не можете редактировать других пользователей");
+      Redirect::to("/users");
+      exit();
+    }
   }
 
   public function edit_user($id)

@@ -25,12 +25,15 @@
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="page_login.html">Войти</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Выйти</a>
-          </li>
+          <?php if (!$login_state) :?>
+            <li class="nav-item">
+              <a class="nav-link" href="/">Войти</a>
+            </li>
+          <?php else : ?>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Выйти</a>
+            </li>
+          <?php endif ;?>
         </ul>
       </div>
     </nav>
