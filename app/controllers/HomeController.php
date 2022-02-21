@@ -4,6 +4,12 @@ namespace App\controllers;
 
 use App\exceptions\NotEnoughMoneyException;
 use App\exceptions\AccountIsBlockException;
+<<<<<<< Updated upstream
+=======
+
+use League\Plates\Engine;
+use Delight\Auth\Auth;
+>>>>>>> Stashed changes
 use Faker\Factory;
 use App\controllers\Redirect;
 use App\controllers\Controller;
@@ -88,6 +94,32 @@ class HomeController extends  Controller
     );
   }
 
+<<<<<<< Updated upstream
+=======
+ 
+
+  public function email_verification()
+  {
+    try {
+      $this->auth->confirmEmail('seDHjJSOosjCbmYd', 'DaJ_atlu_XNxkD7m');
+  
+      echo 'Email address has been verified';
+    }
+    catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
+        die('Invalid token');
+    }
+    catch (\Delight\Auth\TokenExpiredException $e) {
+        die('Token expired');
+    }
+    catch (\Delight\Auth\UserAlreadyExistsException $e) {
+        die('Email address already exists');
+    }
+    catch (\Delight\Auth\TooManyRequestsException $e) {
+        die('Too many requests');
+    }
+  }
+
+>>>>>>> Stashed changes
   public function logout() 
   {
     try {
@@ -99,7 +131,10 @@ class HomeController extends  Controller
     catch (\Delight\Auth\NotLoggedInException $e) {
       $this->flash->error("Вы не ввошли в систему");
       Redirect::to("/");
+<<<<<<< Updated upstream
       exit();
+=======
+>>>>>>> Stashed changes
     }
   }
 

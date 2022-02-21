@@ -2,10 +2,18 @@
 
 namespace App\controllers;
 
+<<<<<<< Updated upstream
 use App\controllers\Controller;
 
 class RegistrationController extends Controller
 {
+=======
+use App\controllers\MainController;
+
+class RegistrationController extends MainController
+{
+  
+>>>>>>> Stashed changes
   public function registration_form() 
   {
     echo $this->templates->render('layout/registration_form', 
@@ -19,25 +27,39 @@ class RegistrationController extends Controller
   public function registration() 
   {
     try {
+<<<<<<< Updated upstream
       $this->auth->register($_POST['email'], $_POST['password'], $_POST['username'] = NULL);
 
       $this->flash->success('Вы успешно зарегестрировались.');
       Redirect::to("/");
       exit();
+=======
+      $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['username'] = NULL);
+      
+      $this->flash->success('Вы успешно зарегестрировались.');
+      Redirect::to("/");
+>>>>>>> Stashed changes
     }
     catch (\Delight\Auth\InvalidEmailException $e) {
         $this->flash->error('Неверный email');
         Redirect::to("/registration_form");
+<<<<<<< Updated upstream
         exit();
+=======
+>>>>>>> Stashed changes
     }
     catch (\Delight\Auth\InvalidPasswordException $e) {
         $this->flash->error('Неверный пароль');
         Redirect::to("/registration_form");
+<<<<<<< Updated upstream
         exit();
+=======
+>>>>>>> Stashed changes
     }
     catch (\Delight\Auth\UserAlreadyExistsException $e) {
         $this->flash->error('Пользователь уже существует');
         Redirect::to("/registration_form");
+<<<<<<< Updated upstream
         exit();
     }
     catch (\Delight\Auth\TooManyRequestsException $e) {
@@ -74,4 +96,13 @@ class RegistrationController extends Controller
       exit();
     }
   }
+=======
+    }
+    catch (\Delight\Auth\TooManyRequestsException $e) {
+        $this->flash->error('Слишком много запросов на рег');
+        Redirect::to("/registration_form");
+    }
+  }
+
+>>>>>>> Stashed changes
 }

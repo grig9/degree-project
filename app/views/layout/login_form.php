@@ -32,7 +32,7 @@
             </form>
         </div>
         <div class="blankpage-footer text-center">
-            Нет аккаунта? <a href="/registration_form"><strong>Зарегистрироваться</strong>
+            Нет аккаунта? <a href="/registration-form"><strong>Зарегистрироваться</strong>
         </div>
     </div>
     <video poster="../app/views/layout/img/backgrounds/clouds.png" id="bgvid" playsinline autoplay muted loop>
