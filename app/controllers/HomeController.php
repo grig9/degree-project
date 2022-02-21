@@ -326,7 +326,7 @@ class HomeController
     } 
 
     try {
-      // $userId = $auth->admin()->createUser($_POST['email'], $_POST['password'], $_POST['username']);
+      $userId = $this->auth->admin()->createUser($_POST['email'], $_POST['password'], $_POST['username']);
       $this->db->insert('users2', [ 
         'name' => $name,
         'position' => $position,
@@ -356,11 +356,13 @@ class HomeController
       $this->flash->error('Введите пароль');
       Redirect::to("/create-user-form");
         // die('Invalid password');
+        exit();
     }
     catch (\Delight\Auth\UserAlreadyExistsException $e) {
       $this->flash->error('Пользователь с таким email уже существует! <br>Пожалуйста, ведите новый email');
       Redirect::to("/create-user-form");
       // die('User already exists');
+      exit();
     }
 
   }
@@ -381,6 +383,7 @@ class HomeController
     {
       $this->flash->success('Вы не авторизированы!');
       Redirect::to("/");
+      exit();
     }
   }
 
