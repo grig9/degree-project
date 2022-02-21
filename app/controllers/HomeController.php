@@ -5,7 +5,6 @@ namespace App\controllers;
 use App\exceptions\NotEnoughMoneyException;
 use App\exceptions\AccountIsBlockException;
 use Faker\Factory;
-use JasonGrimes\Paginator;
 use App\controllers\Redirect;
 use App\controllers\Controller;
 
@@ -22,7 +21,9 @@ class HomeController extends  Controller
 
     $posts = $this->db->getAllPaginator('posts', $itemsPerPage, $currentPage);
 
-    $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+
+    d($this->paginator);die;
+    // $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
     
     echo $this->templates->render('paginator', 
     [
@@ -47,9 +48,18 @@ class HomeController extends  Controller
     }
   }
 
-  public function users() 
+  public function users($id) 
   {
-    $result = $this->db->getAll('users2');
+    $itemsPerPage = 9;
+    $currentPage = $id;
+    $totalItems = $this->db->getAllCount('users2');
+    $urlPattern = '/users/(:num)';
+
+    $result = $this->db->getAllPaginator('users2', $itemsPerPage, $currentPage);
+
+    $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+
+    // $result = $this->db->getAll('users2');
 
     echo $this->templates->render('layout/users', 
       [
@@ -59,6 +69,7 @@ class HomeController extends  Controller
         'login_state' => $this->login_state(),
         'is_admin' => $this->auth->hasRole(\Delight\Auth\Role::ADMIN),
         'auth_id' => $this->auth->id(),
+        'paginator' => $paginator,
       ]
     );
   }

@@ -6,6 +6,7 @@ use League\Plates\Engine;
 use Delight\Auth\Auth;
 use App\QueryBuilder;
 use Tamtamchik\SimpleFlash\Flash;
+use JasonGrimes\Paginator;
 
 abstract class Controller 
 {
@@ -13,12 +14,14 @@ abstract class Controller
   protected $templates;
   protected $auth;
   protected $flash;
+  protected $paginator;
 
-  public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Flash $flash) 
+  public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Flash $flash, Paginator $paginator) 
   {
     $this->db = $qb;
     $this->templates = $engine;
     $this->auth = $auth;
     $this->flash = $flash;
+    $this->paginator = $paginator;
   }
 }

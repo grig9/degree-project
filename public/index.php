@@ -5,6 +5,7 @@ if( !session_id() ) @session_start();
 require '../vendor/autoload.php';
 use League\Plates\Engine;
 use Delight\Auth\Auth;
+use Illuminate\Contracts\Pagination\Paginator;
 use Tamtamchik\SimpleFlash\Flash;
 
 $builder = new DI\ContainerBuilder();
@@ -33,7 +34,13 @@ $builder->addDefinitions([
 
   Flash::class => function() {
     return new Flash();
-  }
+  },
+
+  Paginator::class => function() {
+    return new Paginator();
+  },
+
+
 
 ]);
 
@@ -53,7 +60,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
   
 
-  $r->addRoute('GET', '/users', ['App\controllers\HomeController', 'users']);
+  $r->addRoute('GET', '/users/{id:\d+}', ['App\controllers\HomeController', 'users']);
   $r->addRoute('GET', '/create-user-form', ['App\controllers\HomeController', 'create_user_form']);
   $r->addRoute('POST', '/create-user', ['App\controllers\HomeController', 'create_user']);
   $r->addRoute('GET', '/edit-user-form/{id:\d+}', ['App\controllers\HomeController', 'edit_user_form']);
