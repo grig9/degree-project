@@ -4,42 +4,17 @@ namespace App\controllers;
 
 use App\exceptions\NotEnoughMoneyException;
 use App\exceptions\AccountIsBlockException;
-<<<<<<< Updated upstream
-=======
 
 use League\Plates\Engine;
 use Delight\Auth\Auth;
->>>>>>> Stashed changes
 use Faker\Factory;
 use App\controllers\Redirect;
 use App\controllers\Controller;
+use JasonGrimes\Paginator;
 
-class HomeController extends  Controller 
+class HomeController extends Controller 
 {
   
-
-  public function paginator($id)
-  {
-    $itemsPerPage = 5;
-    $currentPage = $id;
-    $totalItems = $this->db->getAllCount('posts');
-    $urlPattern = '/paginator/page/(:num)';
-
-    $posts = $this->db->getAllPaginator('posts', $itemsPerPage, $currentPage);
-
-
-    d($this->paginator);die;
-    // $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
-    
-    echo $this->templates->render('paginator', 
-    [
-      'title' => 'Paginator',
-      'paginator' => $paginator,
-      'posts' => $posts
-    ]
-  );
-  }
-
   public function fake_posts()
   {
     $faker = Factory::create();
@@ -64,8 +39,6 @@ class HomeController extends  Controller
     $result = $this->db->getAllPaginator('users2', $itemsPerPage, $currentPage);
 
     $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
-
-    // $result = $this->db->getAll('users2');
 
     echo $this->templates->render('layout/users', 
       [
@@ -94,47 +67,38 @@ class HomeController extends  Controller
     );
   }
 
-<<<<<<< Updated upstream
-=======
- 
-
   public function email_verification()
   {
     try {
       $this->auth->confirmEmail('seDHjJSOosjCbmYd', 'DaJ_atlu_XNxkD7m');
-  
       echo 'Email address has been verified';
     }
     catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
-        die('Invalid token');
+      die('Invalid token');
     }
     catch (\Delight\Auth\TokenExpiredException $e) {
-        die('Token expired');
+      die('Token expired');
     }
     catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        die('Email address already exists');
+      die('Email address already exists');
     }
     catch (\Delight\Auth\TooManyRequestsException $e) {
-        die('Too many requests');
+      die('Too many requests');
     }
   }
 
->>>>>>> Stashed changes
   public function logout() 
   {
     try {
       $this->auth->logOutEverywhere();
       $this->flash->success("Вы вышли из системы");
       Redirect::to("/");
-      exit();
+      exit;
     }
     catch (\Delight\Auth\NotLoggedInException $e) {
       $this->flash->error("Вы не ввошли в систему");
       Redirect::to("/");
-<<<<<<< Updated upstream
-      exit();
-=======
->>>>>>> Stashed changes
+      exit;
     }
   }
 
@@ -327,7 +291,7 @@ class HomeController extends  Controller
       );
     } else {
       $this->flash->error("Вы не можете редактировать других пользователей");
-      Redirect::to("/users");
+      Redirect::to("/users/1");
       exit();
     }
   }
@@ -344,7 +308,7 @@ class HomeController extends  Controller
     $this->db->updateById('users2', $data, $id);
     
     $this->flash->success('Профиль успешно обновлен!');
-    Redirect::to("/users");
+    Redirect::to("/users/1");
     exit();
   }
 
@@ -356,19 +320,19 @@ class HomeController extends  Controller
 
       $this->db->deleteById('users2', $id);
       $this->flash->success('Профиль успешно удален!');
-      Redirect::to("/users");
+      Redirect::to("/users/1");
     }
     // if(this->auth is admin or authUserId === $userId) 
     if($this->auth->getUserId() === $id) {
       $this->db->deleteById('users2', $id);
 
       $this->flash->success('Профиль успешно удален!');
-      Redirect::to("/users");
+      Redirect::to("/users/1");
     }
   
 
     $this->flash->success('Вы не можете редактировать профиль!');
-    Redirect::to("/users");
+    Redirect::to("/users/1");
     exit();
   }
 

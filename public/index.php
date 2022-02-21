@@ -37,7 +37,7 @@ $builder->addDefinitions([
   },
 
   Paginator::class => function() {
-    return new Paginator();
+    return new Paginator(100, 50, 8, '/users/(:num)');
   },
 
 
@@ -47,19 +47,13 @@ $builder->addDefinitions([
 $container = $builder->build();
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-<<<<<<< Updated upstream
-=======
-  
->>>>>>> Stashed changes
+
   $r->addRoute('GET', '/', ['App\controllers\LoginController', 'login_form']);
   $r->addRoute('POST', '/login', ['App\controllers\LoginController', 'login']);
 
   $r->addRoute('POST', '/registration', ['App\controllers\RegistrationController', 'registration']);
-<<<<<<< Updated upstream
+
   $r->addRoute('GET', '/registration_form', ['App\controllers\RegistrationController', 'registration_form']);
-=======
-  $r->addRoute('GET', '/registration-form', ['App\controllers\RegistrationController', 'registration_form']);
->>>>>>> Stashed changes
 
   $r->addRoute('GET', '/logout', ['App\controllers\HomeController', 'logout']);
   $r->addRoute('GET', '/status-user/{id:\d+}', ['App\controllers\HomeController', 'status_form']);
@@ -82,23 +76,8 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
   $r->addRoute('GET', '/fakeposts', ['App\controllers\HomeController', 'fake_posts']);
   $r->addRoute('GET', '/paginator/page/{id:\d+}', ['App\controllers\HomeController', 'paginator']);
 
-<<<<<<< Updated upstream
- 
-=======
-  
->>>>>>> Stashed changes
-  
   $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'email_verification']);
   
- 
-<<<<<<< Updated upstream
-
-=======
-  
->>>>>>> Stashed changes
-  
-  
-
   // {id} must be a number (\d+)
   $r->addRoute('GET', '/show/{id:\d+}', ['App\controllers\HomeController', 'show']);
   $r->addRoute('GET', '/delete/book/{id:\d+}', ['App\controllers\HomeController', 'delete_by_id']);

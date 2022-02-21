@@ -49,7 +49,7 @@
                         <div class="info-card-text flex-1">
   
                             <?php if( $is_admin or ($auth_id === (int)$user['id']) )  :?>
-                                <a href="page-profile/<?= $user['id'] ;?>" class="fs-xl text-truncate text-truncate-lg text-info">
+                                <a href="/page-profile/<?= $user['id'] ;?>" class="fs-xl text-truncate text-truncate-lg text-info">
                                     <?=$user['name'] ?>
                                 </a>
                                 <a href="#" class="fs-xl text-truncate text-truncate-lg text-info" data-toggle="dropdown" aria-expanded="false">
@@ -59,13 +59,13 @@
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="/edit-user-form/<?=$user['id']?>">
                                         <i class="fa fa-edit"></i>
-                                    Редактировать</a>
+                                        Редактировать</a>
                                     <a class="dropdown-item" href="/security-user/<?=$user['id']?>">
                                         <i class="fa fa-lock"></i>
-                                    Безопасность</a>
+                                        Безопасность</a>
                                     <a class="dropdown-item" href="/status-user/<?=$user['id']?>">
                                         <i class="fa fa-sun"></i>
-                                    Установить статус</a>
+                                        Установить статус</a>
                                     <a class="dropdown-item" href="/media-user/<?=$user['id']?>">
                                         <i class="fa fa-camera"></i>
                                         Загрузить аватар
@@ -77,7 +77,7 @@
                                 </div>
                             <?php else: ?>
                                 <!-- Name php -->
-                                <a href="page-profile/<?= $user['id'] ;?>" class="fs-xl text-truncate text-truncate-lg text-info">
+                                <a href="/page-profile/<?= $user['id'] ;?>" class="fs-xl text-truncate text-truncate-lg text-info">
                                     <?= $user['name'] ;?> 
                                 </a>
                                             
@@ -117,15 +117,41 @@
 
         <?php endforeach ;?>
     </div>
-    <footer class="page-footer" role="contentinfo">
-        <div class="d-flex align-items-center flex-1 text-muted">
-            <span class="hidden-md-down fw-700">2020 © Учебный проект</span>
-        </div>
-        <div>
-            <ul class="list-table m-0">
-                <li><a href="intel_introduction.html" class="text-secondary fw-700">Home</a></li>
-                <li class="pl-3"><a href="info_app_licensing.html" class="text-secondary fw-700">About</a></li>
-            </ul>
-        </div>
-    </footer>
+    <nav aria-label="Page paginator">
+      <ul class="pagination justify-content-center">
+          <?php if ($paginator->getPrevUrl()): ?>
+              <li class="page-item">
+                <a class="page-link" href="<?php echo $paginator->getPrevUrl(); ?>">&laquo; Previous</a>
+              </li>
+          <?php endif; ?>
+
+          <?php foreach ($paginator->getPages() as $page): ?>
+              <?php if ($page['url']): ?>
+                  <li class="page-item <?php echo $page['isCurrent'] ? 'active' : ''; ?>">
+                      <a class="page-link" href="<?php echo $page['url']; ?>"><?php echo $page['num']; ?></a>
+                  </li>
+              <?php else: ?>
+                  <li class="disabled"><span><?php echo $page['num']; ?></span></li>
+              <?php endif; ?>
+          <?php endforeach; ?>
+
+          <?php if ($paginator->getNextUrl()): ?>
+              <li class="page-item">
+                <a class="page-link" href="<?php echo $paginator->getNextUrl(); ?>">Next &raquo;</a>
+              </li>
+          <?php endif; ?>
+      </ul>
+    </nav>
 </main>
+
+<footer class="page-footer" role="contentinfo">
+    <div class="d-flex align-items-center flex-1 text-muted">
+        <span class="hidden-md-down fw-700">2022 © Учебный проект</span>
+    </div>
+    <div>
+        <ul class="list-table m-0">
+            <li><a href="intel_introduction.html" class="text-secondary fw-700">Home</a></li>
+            <li class="pl-3"><a href="info_app_licensing.html" class="text-secondary fw-700">About</a></li>
+        </ul>
+    </div>
+</footer>

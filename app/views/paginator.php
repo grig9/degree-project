@@ -1,4 +1,3 @@
-<?php $this->layout('layout', ['title' => $title]) ?>
 
 <div class="container">
   <div class="row">

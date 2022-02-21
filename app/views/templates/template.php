@@ -17,11 +17,11 @@
 </head>
 <body class="mod-bg-1 mod-nav-link">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary bg-primary-gradient">  
-      <a class="navbar-brand d-flex align-items-center fw-500" href="/users"><img alt="logo" class="d-inline-block align-top mr-2" src="../app/views/layout/img/logo.png"> Учебный проект</a> <button aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarColor02" data-toggle="collapse" type="button"><span class="navbar-toggler-icon"></span></button>
+      <a class="navbar-brand d-flex align-items-center fw-500" href="/users/1"><img alt="logo" class="d-inline-block align-top mr-2" src="../app/views/layout/img/logo.png"> Учебный проект</a> <button aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarColor02" data-toggle="collapse" type="button"><span class="navbar-toggler-icon"></span></button>
       <div class="collapse navbar-collapse" id="navbarColor02">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="/users">Главная <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="/users/1">Главная <span class="sr-only">(current)</span></a>
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -39,39 +39,13 @@
     </nav>
     <!-- main -->
     <?=$this->section('content')?>
-    <!-- main end -->
-    <nav aria-label="Page paginator">
-      <ul class="pagination justify-content-center">
-          <?php if ($paginator->getPrevUrl()): ?>
-              <li class="page-item">
-                <a class="page-link" href="<?php echo $paginator->getPrevUrl(); ?>">&laquo; Previous</a>
-              </li>
-          <?php endif; ?>
-
-          <?php foreach ($paginator->getPages() as $page): ?>
-              <?php if ($page['url']): ?>
-                  <li class="page-item <?php echo $page['isCurrent'] ? 'active' : ''; ?>">
-                      <a class="page-link" href="<?php echo $page['url']; ?>"><?php echo $page['num']; ?></a>
-                  </li>
-              <?php else: ?>
-                  <li class="disabled"><span><?php echo $page['num']; ?></span></li>
-              <?php endif; ?>
-          <?php endforeach; ?>
-
-          <?php if ($paginator->getNextUrl()): ?>
-              <li class="page-item">
-                <a class="page-link" href="<?php echo $paginator->getNextUrl(); ?>">Next &raquo;</a>
-              </li>
-          <?php endif; ?>
-      </ul>
-    </nav>
+    
 </body>
 
-  <script src="app/views/layout/js/vendors.bundle.js"></script>
-    <script src="app/views/layout/js/app.bundle.js"></script>
-    <script>
-      
-        $(document).ready(function()
+<script src="../app/views/layout/js/vendors.bundle.js"></script>
+<script src="../app/views/layout/js/app.bundle.js"></script>
+<script>
+      $(document).ready(function()
         {
           $('input[type=radio][name=contactview]').change(function()
             {
@@ -97,7 +71,7 @@
             initApp.listFilter($('#js-contacts'), $('#js-filter-contacts'));
         });
 
-    </script>
+</script>
 
 
 </html>
