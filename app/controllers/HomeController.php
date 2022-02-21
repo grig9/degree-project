@@ -4,28 +4,14 @@ namespace App\controllers;
 
 use App\exceptions\NotEnoughMoneyException;
 use App\exceptions\AccountIsBlockException;
-use League\Plates\Engine;
-use Delight\Auth\Auth;
 use Faker\Factory;
 use JasonGrimes\Paginator;
-use App\QueryBuilder;
 use App\controllers\Redirect;
-use Tamtamchik\SimpleFlash\Flash;
+use App\controllers\Controller;
 
-class HomeController 
+class HomeController extends  Controller 
 {
-  private $db;
-  private $templates;
-  private $auth;
-  public $flash;
-
-  public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Flash $flash) 
-  {
-    $this->db = $qb;
-    $this->templates = $engine;
-    $this->auth = $auth;
-    $this->flash = $flash;
-  }
+  
 
   public function paginator($id)
   {
@@ -65,12 +51,9 @@ class HomeController
   {
     $result = $this->db->getAll('users2');
 
-    // $this->auth->admin()->addRoleForUserById(2, \Delight\Auth\Role::ADMIN);
-    // d($this->auth->id());die;
-
     echo $this->templates->render('layout/users', 
       [
-        'title' => 'Users',
+        'title' => 'Пользователи',
         'users' => $result,
         'flash_output' => $this->flash->display(),
         'login_state' => $this->login_state(),
@@ -94,128 +77,18 @@ class HomeController
     );
   }
 
-  public function registration_form() 
-  {
-    echo $this->templates->render('layout/registration_form', 
-      [
-        'title' => 'Registration form',
-        'flash_output' => $this->flash->display(),
-      ]
-    );
-  }
-
-  public function registration() 
-  {
-    // d($_POST);
-    try {
-      $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['username'] = NULL);
-
-      echo 'We have signed up a new user with the ID ' . $userId;
-      $this->flash->success('Вы успешно зарегестрировались.');
-      Redirect::to("/");
-    }
-    catch (\Delight\Auth\InvalidEmailException $e) {
-        // die('Invalid email address');
-        $this->flash->error('Неверный email');
-        Redirect::to("/registration_form");
-    }
-    catch (\Delight\Auth\InvalidPasswordException $e) {
-        // die('Invalid password');
-        $this->flash->error('Неверный пароль');
-        Redirect::to("/registration_form");
-    }
-    catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        // die('User already exists');
-        $this->flash->error('Пользователь уже существует');
-        Redirect::to("/registration_form");
-    }
-    catch (\Delight\Auth\TooManyRequestsException $e) {
-        // die('Too many requests');
-        $this->flash->error('Слишком много запросов на рег');
-        Redirect::to("/registration_form");
-    }
-  }
-
-  public function email_verification()
-  {
-    try {
-      $this->auth->confirmEmail('seDHjJSOosjCbmYd', 'DaJ_atlu_XNxkD7m');
-  
-      echo 'Email address has been verified';
-    }
-    catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
-        die('Invalid token');
-    }
-    catch (\Delight\Auth\TokenExpiredException $e) {
-        die('Token expired');
-    }
-    catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        die('Email address already exists');
-    }
-    catch (\Delight\Auth\TooManyRequestsException $e) {
-        die('Too many requests');
-    }
-  }
-
-  public function login_form() 
-  {
-    echo $this->templates->render('layout/login_form', 
-      [
-        'title' => 'Login',
-        'flash_output' => $this->flash->display(),
-      ]
-    );
-  }
-
-  public function login() 
-  {
-    if (isset($_POST['remember']) == 1) {
-      // keep logged in for one year
-      $rememberDuration = (int) (60 * 60 * 24 * 365.25);
-    }
-    else {
-      // do not keep logged in after session ends
-      $rememberDuration = null;
-    }
-
-    try {
-      $this->auth->login($_POST['email'], $_POST['password'], $rememberDuration);
-  
-      echo 'User is logged in';
-      $this->flash->success('<b>Поздравляю!</b> Вы успешно авторизировались.');
-      Redirect::to("/users");
-    }
-    catch (\Delight\Auth\InvalidEmailException $e) {
-      $this->flash->error('Не верный эл.адрес!');
-      Redirect::to("/");
-        // die('Wrong email address');
-    }
-    catch (\Delight\Auth\InvalidPasswordException $e) {
-      $this->flash->error('Не верный пароль!');
-      Redirect::to("/");
-        // die('Wrong password');
-    }
-    catch (\Delight\Auth\EmailNotVerifiedException $e) {
-      $this->flash->error('Эл.адрес не подтвержден!');
-      Redirect::to("/");
-        // die('Email not verified');
-    }
-    catch (\Delight\Auth\TooManyRequestsException $e) {
-        die('Too many requests');
-    }
-  }
-
   public function logout() 
   {
     try {
       $this->auth->logOutEverywhere();
       $this->flash->success("Вы вышли из системы");
       Redirect::to("/");
+      exit();
     }
     catch (\Delight\Auth\NotLoggedInException $e) {
       $this->flash->error("Вы не ввошли в систему");
       Redirect::to("/");
-      // die('Not logged in');
+      exit();
     }
   }
 
@@ -280,7 +153,6 @@ class HomeController
 
   public function security_form($id)
   {
-    // 'flash_output' => $this->flash->display(),
     $result = $this->db->getOneById('users2', $id);
 
     echo $this->templates->render('layout/security_form', 
@@ -305,6 +177,13 @@ class HomeController
 
   public function create_user() 
   {
+    if(!$this->is_Admin()) 
+    {
+      $this->flash->error('Вы не можете добавлять новых пользователей');
+      Redirect::to("/users");
+      exit();
+    }
+
     $name = $_POST['name'];
     $position = $_POST['position'];
     $phone = $_POST['phone'];
@@ -342,26 +221,23 @@ class HomeController
         'role' => 'user'
        ]);
   
-      $this->flash->success('Мы успешно добавили нового пользователя с ID ' . $userId);
+      $this->flash->success('Вы успешно добавили нового пользователя с ID ' . $userId);
       Redirect::to("/users");
       exit();
     }
     catch (\Delight\Auth\InvalidEmailException $e) {
       $this->flash->error('Не верный ввод email');
       Redirect::to("/create-user-form");
-        // die('Invalid email address');
       exit();
     }
     catch (\Delight\Auth\InvalidPasswordException $e) {
       $this->flash->error('Введите пароль');
       Redirect::to("/create-user-form");
-        // die('Invalid password');
-        exit();
+      exit();
     }
     catch (\Delight\Auth\UserAlreadyExistsException $e) {
       $this->flash->error('Пользователь с таким email уже существует! <br>Пожалуйста, ведите новый email');
       Redirect::to("/create-user-form");
-      // die('User already exists');
       exit();
     }
 

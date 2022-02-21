@@ -40,8 +40,11 @@ $builder->addDefinitions([
 $container = $builder->build();
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-  $r->addRoute('GET', '/', ['App\controllers\HomeController', 'login_form']);
-  $r->addRoute('GET', '/about', ['App\controllers\HomeController', 'about']);
+  $r->addRoute('GET', '/', ['App\controllers\LoginController', 'login_form']);
+  $r->addRoute('POST', '/login', ['App\controllers\LoginController', 'login']);
+
+  $r->addRoute('POST', '/registration', ['App\controllers\RegistrationController', 'registration']);
+  $r->addRoute('GET', '/registration_form', ['App\controllers\RegistrationController', 'registration_form']);
 
   $r->addRoute('GET', '/logout', ['App\controllers\HomeController', 'logout']);
   $r->addRoute('GET', '/status-user/{id:\d+}', ['App\controllers\HomeController', 'status_form']);
@@ -65,13 +68,12 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
   $r->addRoute('GET', '/fakeposts', ['App\controllers\HomeController', 'fake_posts']);
   $r->addRoute('GET', '/paginator/page/{id:\d+}', ['App\controllers\HomeController', 'paginator']);
 
-  $r->addRoute('POST', '/registration', ['App\controllers\HomeController', 'registration']);
-  $r->addRoute('GET', '/registration_form', ['App\controllers\HomeController', 'registration_form']);
+ 
   
   $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'email_verification']);
   
  
-  $r->addRoute('POST', '/login', ['App\controllers\HomeController', 'login']);
+
   
   
 

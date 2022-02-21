@@ -47,8 +47,8 @@
                             <span class="rounded-circle profile-image d-block " style="background-image:url('../app/views/layout/img/demo/avatars/<?=$user['image_name'] ?>'); background-size: cover;"></span>
                         </span>
                         <div class="info-card-text flex-1">
-
-                            <?php if( $is_admin or ($auth_id === $user['id']) )  :?>
+  
+                            <?php if( $is_admin or ($auth_id === (int)$user['id']) )  :?>
                                 <a href="page-profile/<?= $user['id'] ;?>" class="fs-xl text-truncate text-truncate-lg text-info">
                                     <?=$user['name'] ?>
                                 </a>
