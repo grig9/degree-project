@@ -36,12 +36,6 @@ $builder->addDefinitions([
     return new Flash();
   },
 
-  Paginator::class => function() {
-    return new Paginator(100, 50, 8, '/users/(:num)');
-  },
-
-
-
 ]);
 
 $container = $builder->build();
