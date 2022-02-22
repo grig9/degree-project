@@ -2,9 +2,9 @@
 
 namespace App\controllers;
 
-use App\controllers\MainController;
+use App\controllers\Controller;
 
-class LoginController extends MainController
+class LoginController extends Controller
 {
   public function login_form() 
   {

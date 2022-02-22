@@ -200,6 +200,13 @@ class ComposerStaticInit2c89058931c6c46ce8aba7e11e09aeb2
     );
 
     public static $prefixesPsr0 = array (
+        'U' => 
+        array (
+            'Upload' => 
+            array (
+                0 => __DIR__ . '/..' . '/codeguy/upload/src',
+            ),
+        ),
         'J' => 
         array (
             'JasonGrimes' => 

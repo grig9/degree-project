@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'cd07a7acaac0a594002991491b97fb9e41e1b48e',
+        'reference' => '23d9143f4a24126a7f95a1574f288d52707e7867',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'cd07a7acaac0a594002991491b97fb9e41e1b48e',
+            'reference' => '23d9143f4a24126a7f95a1574f288d52707e7867',
             'dev_requirement' => false,
         ),
         'aura/sqlquery' => array(
@@ -26,6 +26,15 @@
             'install_path' => __DIR__ . '/../aura/sqlquery',
             'aliases' => array(),
             'reference' => 'dd81b57aeb43628180a9c70a4df58d872024d7f2',
+            'dev_requirement' => false,
+        ),
+        'codeguy/upload' => array(
+            'pretty_version' => '1.3.2',
+            'version' => '1.3.2.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../codeguy/upload',
+            'aliases' => array(),
+            'reference' => '6a9e5e1fb58d65346d0e557db2d46fb25efd3e37',
             'dev_requirement' => false,
         ),
         'delight-im/auth' => array(

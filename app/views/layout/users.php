@@ -66,11 +66,11 @@
                                     <a class="dropdown-item" href="/status-user/<?=$user['id']?>">
                                         <i class="fa fa-sun"></i>
                                         Установить статус</a>
-                                    <a class="dropdown-item" href="/media-user/<?=$user['id']?>">
+                                    <a class="dropdown-item" href="/media-form/<?=$user['id']?>">
                                         <i class="fa fa-camera"></i>
                                         Загрузить аватар
                                     </a>
-                                    <a href="/user/delete/<?=$user['id']?>" class="dropdown-item" onclick="return confirm('are you sure?');">
+                                    <a href="/user-delete/<?=$user['id']?>" class="dropdown-item" onclick="return confirm('are you sure?');">
                                         <i class="fa fa-window-close"></i>
                                         Удалить
                                     </a>

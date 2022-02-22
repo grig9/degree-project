@@ -22,4 +22,15 @@ abstract class Controller
     $this->auth = $auth;
     $this->flash = $flash;
   }
+
+  public function is_Admin()
+  {
+    if ($this->auth->hasRole(\Delight\Auth\Role::ADMIN)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  
 }

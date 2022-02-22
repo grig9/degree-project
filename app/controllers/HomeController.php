@@ -29,7 +29,7 @@ class HomeController extends Controller
     }
   }
 
-  public function users($id) 
+  public function users(int $id) 
   {
     $itemsPerPage = 9;
     $currentPage = $id;
@@ -53,7 +53,7 @@ class HomeController extends Controller
     );
   }
 
-  public function page_profile($id) 
+  public function page_profile(int $id) 
   {
     $result = $this->db->getOneById('users2', $id);
 
@@ -67,26 +67,6 @@ class HomeController extends Controller
     );
   }
 
-  public function email_verification()
-  {
-    try {
-      $this->auth->confirmEmail('seDHjJSOosjCbmYd', 'DaJ_atlu_XNxkD7m');
-      echo 'Email address has been verified';
-    }
-    catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
-      die('Invalid token');
-    }
-    catch (\Delight\Auth\TokenExpiredException $e) {
-      die('Token expired');
-    }
-    catch (\Delight\Auth\UserAlreadyExistsException $e) {
-      die('Email address already exists');
-    }
-    catch (\Delight\Auth\TooManyRequestsException $e) {
-      die('Too many requests');
-    }
-  }
-
   public function logout() 
   {
     try {
@@ -96,7 +76,7 @@ class HomeController extends Controller
       exit;
     }
     catch (\Delight\Auth\NotLoggedInException $e) {
-      $this->flash->error("Вы не ввошли в систему");
+      $this->flash->error("Вы не были авторизирвованы");
       Redirect::to("/");
       exit;
     }
@@ -114,8 +94,16 @@ class HomeController extends Controller
     }
   }
 
-  public function status_form($id)
+  public function status_form(int $id)
   {
+
+    if(!$this->is_Admin() and $this->auth->id() !== $id) {
+      $this->flash->error('Вы не можете редактировать других пользователей');
+      Redirect::to("/users/1");
+      exit();
+    }
+
+
     $user = $this->db->getOneById('users2', $id);
 
     echo $this->templates->render('layout/status', 
@@ -161,8 +149,14 @@ class HomeController extends Controller
     }
   }
 
-  public function security_form($id)
+  public function security_form(int $id)
   {
+    if(!$this->is_Admin() and $this->auth->id() !== $id) {
+      $this->flash->error('Вы не можете редактировать других пользователей');
+      Redirect::to("/users/1");
+      exit;
+    }
+
     $result = $this->db->getOneById('users2', $id);
 
     echo $this->templates->render('layout/security_form', 
@@ -176,6 +170,13 @@ class HomeController extends Controller
 
   public function create_user_form() 
   {
+    if(!$this->is_Admin()) 
+    {
+      $this->flash->error('Вы не можете добавлять новых пользователей');
+      Redirect::to("/users/1");
+      exit;
+    }
+
     echo $this->templates->render('layout/create_user_form', 
       [
         'title' => 'Create new user',
@@ -187,13 +188,6 @@ class HomeController extends Controller
 
   public function create_user() 
   {
-    if(!$this->is_Admin()) 
-    {
-      $this->flash->error('Вы не можете добавлять новых пользователей');
-      Redirect::to("/users");
-      exit();
-    }
-
     $name = $_POST['name'];
     $position = $_POST['position'];
     $phone = $_POST['phone'];
@@ -209,9 +203,9 @@ class HomeController extends Controller
     $userByEmail = $this->db->getOneByEmail('users2', $email);
 
     if(!empty($userByEmail)) {     
-      $this->flash->error('Пользователь с таким email существует! <br>Пожалуйста, ведите новый email');
+      $this->flash->error('Пользователь с таким email существует! <br>Пожалуйста, введите новый email');
       Redirect::to("/create-user-form");
-      exit();
+      exit;
     } 
 
     try {
@@ -232,55 +226,38 @@ class HomeController extends Controller
        ]);
   
       $this->flash->success('Вы успешно добавили нового пользователя с ID ' . $userId);
-      Redirect::to("/users");
-      exit();
+      Redirect::to("/users/1");
+      exit;
     }
     catch (\Delight\Auth\InvalidEmailException $e) {
       $this->flash->error('Не верный ввод email');
       Redirect::to("/create-user-form");
-      exit();
+      exit;
     }
     catch (\Delight\Auth\InvalidPasswordException $e) {
       $this->flash->error('Введите пароль');
       Redirect::to("/create-user-form");
-      exit();
+      exit;
     }
     catch (\Delight\Auth\UserAlreadyExistsException $e) {
       $this->flash->error('Пользователь с таким email уже существует! <br>Пожалуйста, ведите новый email');
       Redirect::to("/create-user-form");
-      exit();
+      exit;
     }
 
   }
 
-  public function is_Admin()
-  {
-    if ($this->auth->hasRole(\Delight\Auth\Role::ADMIN)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-
-  public function checkLoggedInAndRedirect()
-  {
-    if(!$this->auth->check())
-    {
-      $this->flash->success('Вы не авторизированы!');
-      Redirect::to("/");
-      exit();
-    }
-  }
 
   public function edit_user_form(int $id) 
   { 
        
-    $currenAuthUserId = $this->auth->id();
-   
-    if($this->is_Admin() or $currenAuthUserId === $id) 
-    {
-      $result = $this->db->getOneById('users2', $id);
+    if(!$this->is_Admin() and $this->auth->id() !== $id) {
+      $this->flash->error('Вы не можете редактировать других пользователей');
+      Redirect::to("/users/1");
+      exit;
+    }
+
+    $result = $this->db->getOneById('users2', $id);
 
       echo $this->templates->render('layout/edit_user_form', 
         [
@@ -289,11 +266,6 @@ class HomeController extends Controller
           'login_state' => $this->login_state(),
         ]
       );
-    } else {
-      $this->flash->error("Вы не можете редактировать других пользователей");
-      Redirect::to("/users/1");
-      exit();
-    }
   }
 
   public function edit_user(int $id)
@@ -309,31 +281,21 @@ class HomeController extends Controller
     
     $this->flash->success('Профиль успешно обновлен!');
     Redirect::to("/users/1");
-    exit();
+    exit;
   }
 
   public function user_delete(int $id)
   {
-    $this->checkLoggedInAndRedirect();
-
-    if($this->is_Admin()) {
-
-      $this->db->deleteById('users2', $id);
-      $this->flash->success('Профиль успешно удален!');
+    if(!$this->is_Admin() and $this->auth->id() !== $id) {
+      $this->flash->error('Вы не можете редактировать других пользователей');
       Redirect::to("/users/1");
+      exit;
     }
-    // if(this->auth is admin or authUserId === $userId) 
-    if($this->auth->getUserId() === $id) {
-      $this->db->deleteById('users2', $id);
 
-      $this->flash->success('Профиль успешно удален!');
-      Redirect::to("/users/1");
-    }
-  
-
-    $this->flash->success('Вы не можете редактировать профиль!');
+    $this->db->deleteById('users2', $id);
+    $this->flash->warning('Профиль успешно удален!');
     Redirect::to("/users/1");
-    exit();
+    exit;
   }
 
 }
