@@ -9,7 +9,7 @@
             <i class='subheader-icon fal fa-image'></i> Загрузить аватар
         </h1>
     </div>
-    <form action="/image/<?= $user['id']?>" method="POST" enctype="multipart/form-data">
+    <form action="/image" method="POST" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -19,10 +19,11 @@
                             </div>
                             <div class="panel-content">
                                 <div class="form-group">
-                                    <img src="../app/views/layout/img/demo/avatars/<?=$user['image_name'] ?>" alt="" class="img-responsive" width="200">
+                                    <img src="../app/views/layout/img/demo/avatars/<?=$user['image'] ?>" alt="" class="img-responsive" width="200">
                                 </div>
 
                                 <div class="form-group">
+                                    <input type="hidden" name="id" value="<?= $user['id']?>">
                                     <label class="form-label" for="example-fileinput">Выберите аватар</label>
                                     <input type="file" name="image" id="example-fileinput" class="form-control-file">
                                 </div>

@@ -6,7 +6,7 @@
                 <i class='subheader-icon fal fa-plus-circle'></i> Редактировать
             </h1>
         </div>
-        <form action="/edit/user/<?=$user['id']?>" method="POST">
+        <form action="/edit-user" method="POST">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -15,10 +15,11 @@
                                 <h2>Общая информация</h2>
                             </div>
                             <div class="panel-content">
+                                <input type="hidden" name="id" value="<?=$user['id']?>">
                                 <!-- username -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Имя</label>
-                                    <input type="text" id="simpleinput" class="form-control" name="name" value="<?=$user['name']?>">
+                                    <input type="text" id="simpleinput" class="form-control" name="name" value="<?=$user['username']?>">
                                 </div>
 
                                 <!-- title -->

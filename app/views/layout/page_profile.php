@@ -5,7 +5,7 @@
             <div class="subheader">
                 <h1 class="subheader-title">
                     <i class='subheader-icon fal fa-user'></i>
-                    <?= $user['name'] ?>
+                    <?= $user['username'] ?>
                 </h1>
             </div>
             <div class="row">
@@ -15,9 +15,9 @@
                         <div class="row no-gutters row-grid">
                             <div class="col-12">
                                 <div class="d-flex flex-column align-items-center justify-content-center p-4">
-                                    <img src="../app/views/layout/img/demo/avatars/<?= $user['image_name'] ?>" class="rounded-circle shadow-2 img-thumbnail" alt="">
+                                    <img src="../app/views/layout/img/demo/avatars/<?= $user['image'] ?>" class="rounded-circle shadow-2 img-thumbnail" alt="">
                                     <h5 class="mb-0 fw-700 text-center mt-3">
-                                        <?= $user['name'] ?>
+                                        <?= $user['username'] ?>
                                         <small class="text-muted mb-0"><?= $user['position'] ?></small>
                                     </h5>
                                     <div class="mt-4 text-center demo">

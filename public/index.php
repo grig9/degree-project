@@ -49,37 +49,35 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
   $r->addRoute('GET', '/registration-form', ['App\controllers\RegistrationController', 'registration_form']);
 
+  $r->addRoute('GET', '/users/{id:\d+}', ['App\controllers\HomeController', 'users']);
+
   $r->addRoute('GET', '/logout', ['App\controllers\HomeController', 'logout']);
+
   $r->addRoute('GET', '/status-user/{id:\d+}', ['App\controllers\HomeController', 'status_form']);
+  $r->addRoute('POST', '/set-user-status', ['App\controllers\HomeController', 'set_user_status']);
 
   $r->addRoute('GET', '/page-profile/{id:\d+}', ['App\controllers\HomeController', 'page_profile']);
 
   $r->addRoute('GET', '/media-form/{id:\d+}', ['App\controllers\MediaController', 'media_form']);
-  $r->addRoute('POST', '/image/{id:\d+}', ['App\controllers\MediaController', 'image']);
+  $r->addRoute('POST', '/image', ['App\controllers\MediaController', 'download_image']);
 
-  $r->addRoute('GET', '/users/{id:\d+}', ['App\controllers\HomeController', 'users']);
+  
   $r->addRoute('GET', '/create-user-form', ['App\controllers\HomeController', 'create_user_form']);
   $r->addRoute('POST', '/create-user', ['App\controllers\HomeController', 'create_user']);
+
   $r->addRoute('GET', '/edit-user-form/{id:\d+}', ['App\controllers\HomeController', 'edit_user_form']);
-  $r->addRoute('POST', '/edit_user/{id:\d+}', ['App\controllers\HomeController', 'edit_user']);
+  $r->addRoute('POST', '/edit-user', ['App\controllers\HomeController', 'edit_user']);
 
-  $r->addRoute('GET', '/user-delete/{id:\d+}', ['App\controllers\HomeController', 'user_delete']);
-  $r->addRoute('GET', '/security-user/{id:\d+}', ['App\controllers\HomeController', 'security_form']);
-  $r->addRoute('POST', '/security/{id:\d+}', ['App\controllers\HomeController', 'security']);
-  
+  $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'verification']);
 
-  $r->addRoute('GET', '/fakeposts', ['App\controllers\HomeController', 'fake_posts']);
-  $r->addRoute('GET', '/paginator/page/{id:\d+}', ['App\controllers\HomeController', 'paginator']);
-
-  $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'email_verification']);
-  
   // {id} must be a number (\d+)
-  $r->addRoute('GET', '/show/{id:\d+}', ['App\controllers\HomeController', 'show']);
-  $r->addRoute('GET', '/delete/book/{id:\d+}', ['App\controllers\HomeController', 'delete_by_id']);
- 
-  $r->addRoute('POST', '/update/book/{id:\d+}', ['App\controllers\HomeController', 'update_by_id']);
+  $r->addRoute('GET', '/user-delete/{id:\d+}', ['App\controllers\HomeController', 'user_delete']);
+
+  $r->addRoute('GET', '/security-user/{id:\d+}', ['App\controllers\HomeController', 'security_form']);
+  $r->addRoute('POST', '/security', ['App\controllers\HomeController', 'security']);
+    
   // The /{title} suffix is optional
-  $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
+  // $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
 });
 
 // Fetch method and URI from somewhere

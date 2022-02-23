@@ -7,7 +7,7 @@
             </h1>
 
         </div>
-        <form action="/security/<?=$user['id']?>" method="POST">
+        <form action="/security" method="POST">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -19,7 +19,7 @@
                                 <!-- email -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Email</label>
-                                    <input type="text" id="simpleinput" class="form-control" name="email" value="<?=$user['email']?>">
+                                    <input type="text" id="simpleinput" class="form-control" name="newEmail" value="<?=$user['email']?>">
                                 </div>
 
                                 <!-- password -->
@@ -31,7 +31,7 @@
                                 <!-- password confirmation-->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Подтверждение пароля</label>
-                                    <input type="password" id="simpleinput" class="form-control" >
+                                    <input type="password" id="simpleinput" class="form-control" name="confirm_password" >
                                 </div>
 
 

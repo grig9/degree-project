@@ -31,26 +31,26 @@
         <?php foreach($users as $user) :?>
                     
         <div class="col-xl-4" id="js-contacts">
-            <div id="c_1" class="card border shadow-0 mb-g shadow-sm-hover" data-filter-tags="<?=strtolower($user['name']) ?>">
+            <div id="c_1" class="card border shadow-0 mb-g shadow-sm-hover" data-filter-tags="<?=strtolower($user['username']) ?>">
                 <div class="card-body border-faded border-top-0 border-left-0 border-right-0 rounded-top">
                     <div class="d-flex flex-row align-items-center">
-                        <span class="status status-<?php if($user['status'] === 'online') {
+                        <span class="status status-<?php if($user['status_site'] === 'online') {
                                                             echo "success";
-                                                        } elseif($user['status'] === 'away') {
+                                                        } elseif($user['status_site'] === 'away') {
                                                             echo "warning";
-                                                        } elseif($user['status'] === 'not_disturb') {
+                                                        } elseif($user['status_site'] === 'not_disturb') {
                                                             echo "danger";
                                                         } else {
                                                             echo "secondary";
                                                         }
                                                     ;?> mr-3">
-                            <span class="rounded-circle profile-image d-block " style="background-image:url('../app/views/layout/img/demo/avatars/<?=$user['image_name'] ?>'); background-size: cover;"></span>
+                            <span class="rounded-circle profile-image d-block " style="background-image:url('../app/views/layout/img/demo/avatars/<?=$user['image'] ?>'); background-size: cover;"></span>
                         </span>
                         <div class="info-card-text flex-1">
   
                             <?php if( $is_admin or ($auth_id === (int)$user['id']) )  :?>
                                 <a href="/page-profile/<?= $user['id'] ;?>" class="fs-xl text-truncate text-truncate-lg text-info">
-                                    <?=$user['name'] ?>
+                                    <?=$user['username'] ?>
                                 </a>
                                 <a href="#" class="fs-xl text-truncate text-truncate-lg text-info" data-toggle="dropdown" aria-expanded="false">
                                     <i class="fal fas fa-cog fa-fw d-inline-block ml-1 fs-md"></i>
@@ -78,7 +78,7 @@
                             <?php else: ?>
                                 <!-- Name php -->
                                 <a href="/page-profile/<?= $user['id'] ;?>" class="fs-xl text-truncate text-truncate-lg text-info">
-                                    <?= $user['name'] ;?> 
+                                    <?= $user['username'] ;?> 
                                 </a>
                                             
                             <?php endif ;?>
