@@ -3,32 +3,27 @@
 namespace App\controllers;
 
 use App\core\Controller;
-use JasonGrimes\Paginator;
-
+// use JasonGrimes\Paginator;
+use App\models\HomeModel;
 
 class HomeController extends Controller 
 {
 
   public function users(int $id) 
   {
-    $itemsPerPage = 6;
-    $currentPage = $id;
-    $totalItems = $this->db->getAllCount('users');
-    $urlPattern = '/users/(:num)';
+    // $obj = new HomeModel();
+    $data =  $obj->users_data($id);
 
-    $result = $this->db->getAllPaginator('users', $itemsPerPage, $currentPage);
-
-    $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
-
+    
     echo $this->templates->render('layout/users', 
       [
         'title' => 'Пользователи',
-        'users' => $result,
+        'users' => $data['result'],
         'flash_output' => $this->flash->display(),
         'login_state' => $this->login_state(),
         'is_admin' => $this->auth->hasRole(\Delight\Auth\Role::ADMIN),
         'auth_id' => $this->auth->id(),
-        'paginator' => $paginator,
+        'paginator' => $data['paginator'],
       ]
     );
   }

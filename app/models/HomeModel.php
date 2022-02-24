@@ -10,10 +10,10 @@ use App\core\Model;
 use JasonGrimes\Paginator;
 use App\File;
 
-class HomeController extends Model 
+class HomeModel extends Model 
 {
 
-  public function users(int $id) 
+  public function users_data(int $id) 
   {
     $itemsPerPage = 6;
     $currentPage = $id;
@@ -24,19 +24,11 @@ class HomeController extends Model
 
     $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
 
+    return [
+      'result' => $result,
+      'paginator' => $paginator,
+    ];
 
-
-    echo $this->templates->render('layout/users', 
-      [
-        'title' => 'Пользователи',
-        'users' => $result,
-        'flash_output' => $this->flash->display(),
-        'login_state' => $this->login_state(),
-        'is_admin' => $this->auth->hasRole(\Delight\Auth\Role::ADMIN),
-        'auth_id' => $this->auth->id(),
-        'paginator' => $paginator,
-      ]
-    );
   }
 
   public function page_profile(int $id) 
