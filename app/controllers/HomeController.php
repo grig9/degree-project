@@ -7,11 +7,10 @@ use App\exceptions\AccountIsBlockException;
 
 use League\Plates\Engine;
 use Delight\Auth\Auth;
-use Faker\Factory;
-use App\controllers\Redirect;
+use App\Redirect;
 use App\controllers\Controller;
 use JasonGrimes\Paginator;
-use App\controllers\File;
+use App\File;
 
 class HomeController extends Controller 
 {
@@ -105,7 +104,7 @@ class HomeController extends Controller
   {
     // d($_POST);die;
     $this->db->updateById('users', 
-    ['status_site' => $_POST['status']],
+    ['status_user' => $_POST['status_user']],
     $_POST['id']);
     
     $this->flash->success('Вы успешно обновили статус');
@@ -211,29 +210,22 @@ class HomeController extends Controller
 
   public function create_user() 
   {
-    $position = $_POST['position'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];
-    $status_site = $_POST['status_site'];
-    $vk = $_POST['vk'];
-    $telegram = $_POST['telegram'];
-    $instagram = $_POST['instagram'];
 
     try {
       $userId = $this->auth->admin()->createUser($_POST['email'], $_POST['password'], $_POST['username']);
 
       $image = File::save();
 
-      $this->db->insert('users', [ 
-        'position' => $position,
-        'phone' => $phone,
-        'address' => $address,
-        'status_site' => $status_site,
+      $this->db->updateById('users', [ 
+        'position' => $_POST['position'],
+        'phone' => $_POST['phone'],
+        'address' => $_POST['address'],
+        'status_user' => $_POST['status_user'],
         'image' => $image,
-        'vk' => $vk,
-        'telegram' => $telegram,
-        'instagram' => $instagram
-       ]);
+        'vk' => $_POST['vk'],
+        'telegram' => $_POST['telegram'],
+        'instagram' => $_POST['instagram']
+       ], $userId);
   
       $this->flash->success('Вы успешно добавили нового пользователя с ID ' . $userId);
       Redirect::to("/users/1");

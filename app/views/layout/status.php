@@ -30,7 +30,7 @@
                                                 <?php foreach($list_status as $status_key => $status_value): ?>
                                                     <option value="<?= $status_key ;?>" 
                                                         <?php
-                                                            if ( $user['status_site'] === $status_key) {
+                                                            if ( $user['status_user'] === $status_key) {
                                                                 echo 'selected';
                                                             } 
                                                         ;?>

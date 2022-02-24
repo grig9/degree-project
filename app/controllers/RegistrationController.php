@@ -3,7 +3,7 @@
 namespace App\controllers;
 
 use App\controllers\Controller;
-
+use App\Redirect;
 
 class RegistrationController extends Controller
 {

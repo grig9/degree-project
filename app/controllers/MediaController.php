@@ -3,8 +3,8 @@
 namespace App\controllers;
 
 use App\controllers\Controller;
-
-use App\controllers\File;
+use App\File;
+use App\Redirect;
 
 class MediaController extends Controller
 {

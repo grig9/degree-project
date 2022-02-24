@@ -34,11 +34,11 @@
             <div id="c_1" class="card border shadow-0 mb-g shadow-sm-hover" data-filter-tags="<?=strtolower($user['username']) ?>">
                 <div class="card-body border-faded border-top-0 border-left-0 border-right-0 rounded-top">
                     <div class="d-flex flex-row align-items-center">
-                        <span class="status status-<?php if($user['status_site'] === 'online') {
+                        <span class="status status-<?php if($user['status_user'] === 'online') {
                                                             echo "success";
-                                                        } elseif($user['status_site'] === 'away') {
+                                                        } elseif($user['status_user'] === 'away') {
                                                             echo "warning";
-                                                        } elseif($user['status_site'] === 'not_disturb') {
+                                                        } elseif($user['status_user'] === 'not_disturb') {
                                                             echo "danger";
                                                         } else {
                                                             echo "secondary";
