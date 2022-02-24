@@ -15,24 +15,10 @@ use App\controllers\File;
 
 class HomeController extends Controller 
 {
-  
-  public function fake_posts()
-  {
-    $faker = Factory::create();
-
-    for ($i = 0; $i < 100; $i++) {
-      $this->db->insert('posts',
-        [
-          'title' => $faker->word(3, true),
-          'content' => $faker->paragraphs(10, true),
-        ]
-      );
-    }
-  }
 
   public function users(int $id) 
   {
-    $itemsPerPage = 9;
+    $itemsPerPage = 6;
     $currentPage = $id;
     $totalItems = $this->db->getAllCount('users');
     $urlPattern = '/users/(:num)';
@@ -186,9 +172,9 @@ class HomeController extends Controller
   public function verification() 
   {
     try {
-      $this->auth->confirmEmail('vBiXFsQ7QY4NfjFm', 'KaylB5vx_kbpp7Pi');
+      $this->auth->confirmEmail($_GET['selector'], $_GET['token']);
 
-      $this->flash('Email address has been verified');
+      $this->flash->success('Email address has been verified');
       Redirect::to("/users/1");
     }
     catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
@@ -308,7 +294,7 @@ class HomeController extends Controller
     exit;
   }
 
-  public function user_delete($id)
+  public function user_delete(int $id)
   {
 
     if(!$this->is_Admin() and $this->auth->id() !== $id) {
