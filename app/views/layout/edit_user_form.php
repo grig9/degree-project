@@ -19,7 +19,7 @@
                                 <!-- username -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Имя</label>
-                                    <input type="text" id="simpleinput" class="form-control" name="username" value="<?=$user['username']?>">
+                                    <input type="text" id="simpleinput" class="form-control" name="name" value="<?=$user['username']?>">
                                 </div>
 
                                 <!-- title -->

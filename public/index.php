@@ -5,6 +5,7 @@ if( !session_id() ) @session_start();
 require '../vendor/autoload.php';
 use League\Plates\Engine;
 use Delight\Auth\Auth;
+use Illuminate\Contracts\Pagination\Paginator;
 use Tamtamchik\SimpleFlash\Flash;
 
 $builder = new DI\ContainerBuilder();
@@ -42,10 +43,11 @@ $container = $builder->build();
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
   $r->addRoute('GET', '/', ['App\controllers\LoginController', 'login_form']);
-  $r->addRoute('POST', '/login', ['App\models\LoginModel', 'login']);
+  $r->addRoute('POST', '/login', ['App\controllers\LoginController', 'login']);
+
+  $r->addRoute('POST', '/registration', ['App\controllers\RegistrationController', 'registration']);
 
   $r->addRoute('GET', '/registration-form', ['App\controllers\RegistrationController', 'registration_form']);
-  $r->addRoute('POST', '/registration', ['App\models\RegistrationModel', 'registration']);
 
   $r->addRoute('GET', '/users/{id:\d+}', ['App\controllers\HomeController', 'users']);
 
@@ -66,13 +68,13 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
   $r->addRoute('GET', '/edit-user-form/{id:\d+}', ['App\controllers\HomeController', 'edit_user_form']);
   $r->addRoute('POST', '/edit-user', ['App\controllers\HomeController', 'edit_user']);
 
+  $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'verification']);
+
   // {id} must be a number (\d+)
   $r->addRoute('GET', '/user-delete/{id:\d+}', ['App\controllers\HomeController', 'user_delete']);
 
   $r->addRoute('GET', '/security-user/{id:\d+}', ['App\controllers\HomeController', 'security_form']);
   $r->addRoute('POST', '/security', ['App\controllers\HomeController', 'security']);
-
-  $r->addRoute('GET', '/verification/{selector:.+}/{token:.+}', ['App\controllers\HomeController', 'verification']);
     
   // The /{title} suffix is optional
   // $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
