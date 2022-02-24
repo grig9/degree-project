@@ -25,12 +25,12 @@
                                         <div class="form-group">
                                             <input type="hidden" name="id" value="<?= $user['id'] ?>">
                                             <label class="form-label" for="example-select">Выберите статус</label>
-                                            <select class="form-control" id="example-select" name="status">
+                                            <select class="form-control" id="example-select" name="status_user">
                                             <!-- status options -->
                                                 <?php foreach($list_status as $status_key => $status_value): ?>
                                                     <option value="<?= $status_key ;?>" 
                                                         <?php
-                                                            if ( $user['status_site'] === $status_key) {
+                                                            if ( $user['status_user'] === $status_key) {
                                                                 echo 'selected';
                                                             } 
                                                         ;?>

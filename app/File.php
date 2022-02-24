@@ -1,6 +1,6 @@
 <?php
 
-namespace App\controllers;
+namespace App;
 
 
 class File 
@@ -22,15 +22,9 @@ class File
         'md5'        => $file->getMd5(),
         'dimensions' => $file->getDimensions()
     );
-    try {
-    // Success!
+
     $file->upload();
 
     return $data['name'];
-
-    } catch (\Exception $e) {
-        // Fail!
-        $errors = $file->getErrors();
-    }
   }
 }

@@ -21,7 +21,7 @@
                                 <!-- username -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinputName">Имя</label>
-                                    <input type="text" id="simpleinputName" name="name" class="form-control">
+                                    <input type="text" id="simpleinputName" name="username" class="form-control">
                                 </div>
 
                                 <!-- title -->
@@ -69,7 +69,7 @@
                                 <!-- status -->
                                 <div class="form-group">
                                     <label class="form-label" for="example-select">Выберите статус</label>
-                                    <select class="form-control" name="status_site" id="example-select">
+                                    <select class="form-control" name="status_user" id="example-select">
                                         <option value="online">Онлайн</option>
                                         <option value="away">Отошел</option>
                                         <option value="not_disturb">Не беспокоить</option>

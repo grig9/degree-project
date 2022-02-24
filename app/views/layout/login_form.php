@@ -15,8 +15,8 @@
             
             <form action="/login" method="POST">
                 <div class="form-group">
-                    <label class="form-label" for="username">Email</label>
-                    <input type="email" id="username" class="form-control" name="email">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" id="email" class="form-control" name="email">
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="password">Пароль</label>
