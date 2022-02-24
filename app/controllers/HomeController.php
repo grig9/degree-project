@@ -142,7 +142,7 @@ class HomeController extends Controller
             echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
             echo '  For SMS, consider using a third-party service and a compatible SDK';
             echo "<br>";
-            echo "<a href='https://localhost/verification' . \urlencode($selector) . '&token=' . \urlencode($token)'></a>";
+            echo '<a href="/verification/' . urlencode($selector) . '/' . urlencode($token)'"></a>;
         });
 
         echo 'The change will take effect as soon as the new email address has been confirmed';
