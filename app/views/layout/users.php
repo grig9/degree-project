@@ -44,7 +44,7 @@
                                                             echo "secondary";
                                                         }
                                                     ;?> mr-3">
-                            <span class="rounded-circle profile-image d-block " style="background-image:url('../app/views/layout/img/demo/avatars/<?=$user['image'] ?>'); background-size: cover;"></span>
+                            <span class="rounded-circle profile-image d-block " style="background-image:url('../app/views/layout/img/demo/avatars/<?php echo !empty($user['image']) ? $user['image'] : 'no_image.png' ?>'); background-size: cover;"></span>
                         </span>
                         <div class="info-card-text flex-1">
   

@@ -4,14 +4,15 @@ namespace App\controllers;
 
 use App\Redirect;
 use App\controllers\Controller;
+
 use JasonGrimes\Paginator;
-use App\File;
 
 class HomeController extends Controller 
 {
 
   public function show_users(int $id) 
   {
+
     $itemsPerPage = 6;
     $currentPage = $id;
     $totalItems = $this->db->getAllCount('users');
@@ -27,7 +28,7 @@ class HomeController extends Controller
         'users' => $result,
         'flash_output' => $this->flash->display(),
         'login_state' => $this->login_state(),
-        'is_admin' => $this->auth->hasRole(\Delight\Auth\Role::ADMIN),
+        'is_admin' => $this->is_Admin(),
         'auth_id' => $this->auth->id(),
         'paginator' => $paginator,
       ]
@@ -46,33 +47,6 @@ class HomeController extends Controller
         'login_state' => $this->login_state(),
       ]
     );
-  }
-
-  public function logout() 
-  {
-    try {
-      $this->auth->logOutEverywhere();
-      $this->flash->success("Вы вышли из системы");
-      Redirect::to("/");
-      exit;
-    }
-    catch (\Delight\Auth\NotLoggedInException $e) {
-      $this->flash->error("Вы не были авторизирвованы");
-      Redirect::to("/");
-      exit;
-    }
-  }
-
-  public function login_state() 
-  {
-    if ($this->auth->isLoggedIn()) {
-      // echo 'User is signed in';
-      return true;
-    }
-    else {
-      // echo 'User is not signed in yet';
-      return false;
-    }
   }
 
   public function show_status_form(int $id)
@@ -178,76 +152,19 @@ class HomeController extends Controller
       Redirect::to("/users/1");
     }
     catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
-        die('Invalid token');
+      die('Invalid token');
     }
     catch (\Delight\Auth\TokenExpiredException $e) {
-        die('Token expired');
+      die('Token expired');
     }
     catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        die('Email address already exists');
+      $this->flash->error('Такой email уже существует!');
+      Redirect::to("/");
     }
     catch (\Delight\Auth\TooManyRequestsException $e) {
-        die('Too many requests');
-    }
-  }
-
-  public function show_create_user_form() 
-  {
-    if(!$this->is_Admin()) 
-    {
-      $this->flash->error('Доступ запрещен');
+      $this->flash->error('Too many requests!');
       Redirect::to("/users/1");
-      exit;
     }
-
-    echo $this->templates->render('layout/create_user_form', 
-      [
-        'title' => 'Create new user',
-        'flash_output' => $this->flash->display(),
-        'login_state' => $this->login_state(),
-      ]
-    );
-  }
-
-  public function create_user() 
-  {
-
-    try {
-      $userId = $this->auth->admin()->createUser($_POST['email'], $_POST['password'], $_POST['username']);
-
-      $image = File::save();
-
-      $this->db->updateById('users', [ 
-        'position' => $_POST['position'],
-        'phone' => $_POST['phone'],
-        'address' => $_POST['address'],
-        'status_user' => $_POST['status_user'],
-        'image' => $image,
-        'vk' => $_POST['vk'],
-        'telegram' => $_POST['telegram'],
-        'instagram' => $_POST['instagram']
-       ], $userId);
-  
-      $this->flash->success('Вы успешно добавили нового пользователя с ID ' . $userId);
-      Redirect::to("/users/1");
-      exit;
-    }
-    catch (\Delight\Auth\InvalidEmailException $e) {
-      $this->flash->error('Не верный ввод email');
-      Redirect::to("/create-user-form");
-      exit;
-    }
-    catch (\Delight\Auth\InvalidPasswordException $e) {
-      $this->flash->error('Введите пароль');
-      Redirect::to("/create-user-form");
-      exit;
-    }
-    catch (\Delight\Auth\UserAlreadyExistsException $e) {
-      $this->flash->error('Пользователь с таким email уже существует! <br>Пожалуйста, ведите другой email');
-      Redirect::to("/create-user-form");
-      exit;
-    }
-
   }
 
   public function show_edit_user_form(int $id) 
@@ -292,15 +209,43 @@ class HomeController extends Controller
       Redirect::to("/users/1");
     }
 
-    try {
-      $this->auth->admin()->deleteUserById($id);
-      $this->flash->warning('Профиль успешно удален!');
-      Redirect::to("/users/1");
+    if($this->is_Admin())
+    {
+      try {
+        $this->auth->admin()->deleteUserById($id);
+        $this->flash->warning('Профиль успешно удален!');
+        Redirect::to("/users/1");
+      }
+      catch (\Delight\Auth\UnknownIdException $e) {
+        $this->flash->error('Такого пользователя не существует');
+        Redirect::to("/users/1");
+      }
     }
-    catch (\Delight\Auth\UnknownIdException $e) {
-      $this->flash->error('Пользователя не существует');
-      Redirect::to("/users/1");
+
+    if($this->auth->id() === $id) {
+      try {
+
+        try {
+          $this->auth->logOutEverywhere();
+        }
+        catch (\Delight\Auth\NotLoggedInException $e) {
+          $this->flash->error("Вы не были авторизирвованы");
+          Redirect::to("/");
+          exit;
+        }
+
+        $this->auth->admin()->deleteUserById($id);
+        $this->flash->warning('Вы успешно удалили свой профиль!');
+
+        Redirect::to("/users/1");
+      }
+      catch (\Delight\Auth\UnknownIdException $e) {
+        $this->flash->error('Такого пользователя не существует');
+        Redirect::to("/users/1");
+      }
     }
+
+    
 
   }
 

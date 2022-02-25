@@ -33,21 +33,28 @@ class MediaController extends Controller
   {
     $id = $_POST['id'];
 
-    $user = $this->db->getOneById('users', $id);
-
-    unlink('../app/views/layout/img/demo/avatars/' . $user['image']);
-
-    $new_filename = File::save();
-    
-    $this->db->updateById('users', 
-      [
-        'image' => $new_filename
-      ], 
+    if($_FILES['image']['error'] === UPLOAD_ERR_OK ) {
       
-      $id);
 
-    $this->flash->success('Вы успешно загрузили изобаржение');
-    Redirect::to("/media-form/$id");
+      $user = $this->db->getOneById('users', $id);
+
+      unlink('../app/views/layout/img/demo/avatars/' . $user['image']);
+
+      $new_filename = File::save();
+      
+      $this->db->updateById('users', 
+        [
+          'image' => $new_filename
+        ], 
+        
+        $id);
+
+      $this->flash->success('Вы успешно загрузили изобаржение');
+      Redirect::to("/media-form/$id");
+    }else {
+      $this->flash->error('Загрузить изображение не удалось. Возможно вы не выбрали изображение');
+      Redirect::to("/media-form/$id");
+    }
   }
 
 }

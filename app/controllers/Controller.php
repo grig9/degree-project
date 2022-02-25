@@ -6,6 +6,7 @@ use League\Plates\Engine;
 use Delight\Auth\Auth;
 use App\QueryBuilder;
 use Tamtamchik\SimpleFlash\Flash;
+use App\Redirect;
 
 abstract class Controller 
 {
@@ -29,6 +30,33 @@ abstract class Controller
       return true;
     } else {
       return false;
+    }
+  }
+
+  public function login_state() 
+  {
+    if ($this->auth->isLoggedIn()) {
+      // echo 'User is signed in';
+      return true;
+    }
+    else {
+      // echo 'User is not signed in yet';
+      return false;
+    }
+  }
+
+  public function logout() 
+  {
+    try {
+      $this->auth->logOutEverywhere();
+      $this->flash->success("Вы вышли из системы");
+      Redirect::to("/");
+      exit;
+    }
+    catch (\Delight\Auth\NotLoggedInException $e) {
+      $this->flash->error("Вы не были авторизирвованы");
+      Redirect::to("/");
+      exit;
     }
   }
 

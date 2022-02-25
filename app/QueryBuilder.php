@@ -41,7 +41,7 @@ class QueryBuilder
     return $sth->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function getAllCount(string $table)
+  public function getAllCount(string $table) : int
   {
     $select = $this->queryFactory->newSelect();
     $select->cols(["COUNT(*) AS count"])
@@ -49,7 +49,7 @@ class QueryBuilder
 
     $sth = $this->pdo->prepare($select->getStatement());
     $sth->execute($select->getBindValues());
-    return (int) $sth->fetchColumn();
+    return $sth->fetchColumn();
   }
 
   public function getOneById(string $table,  int $id) 

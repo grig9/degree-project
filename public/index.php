@@ -63,8 +63,8 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
   $r->addRoute('POST', '/image', ['App\controllers\MediaController', 'download_image']);
 
   
-  $r->addRoute('GET', '/create-user-form', ['App\controllers\HomeController', 'show_create_user_form']);
-  $r->addRoute('POST', '/create-user', ['App\controllers\HomeController', 'create_user']);
+  $r->addRoute('GET', '/create-user-form', ['App\controllers\AddUserController', 'show_create_user_form']);
+  $r->addRoute('POST', '/create-user', ['App\controllers\AddUserController', 'create_user']);
 
   $r->addRoute('GET', '/edit-user-form/{id:\d+}', ['App\controllers\HomeController', 'show_edit_user_form']);
   $r->addRoute('POST', '/edit-user', ['App\controllers\HomeController', 'edit_user']);
