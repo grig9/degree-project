@@ -71,10 +71,7 @@ class HomeController extends Controller
 
   public function set_user_status() 
   {
-    // d($_POST);die;
-    $this->db->updateById('users', 
-    ['status_user' => $_POST['status_user']],
-    $_POST['id']);
+    $this->db->updateById('users',  ['status_user' => $_POST['status_user'] ],  $_POST['id']);
     
     $this->flash->success('Вы успешно обновили статус');
     Redirect::to("/users/1");
@@ -204,11 +201,6 @@ class HomeController extends Controller
   public function user_delete(int $id)
   {
 
-    if(!$this->is_Admin() and $this->auth->id() !== $id) {
-      $this->flash->error('Вы не можете редактировать других пользователей');
-      Redirect::to("/users/1");
-    }
-
     if($this->is_Admin())
     {
       try {
@@ -222,7 +214,8 @@ class HomeController extends Controller
       }
     }
 
-    if($this->auth->id() === $id) {
+    if($this->auth->id() === $id) 
+    {
       try {
 
         try {
@@ -245,7 +238,8 @@ class HomeController extends Controller
       }
     }
 
-    
+    $this->flash->error('Вы не можете редактировать других пользователей');
+    Redirect::to("/users/1");
 
   }
 
