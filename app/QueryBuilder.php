@@ -15,7 +15,7 @@ class QueryBuilder
     $this->queryFactory = new QueryFactory('mysql');
   }
 
-  public function getAll($table) 
+  public function getAll(string $table) 
   {
     $select = $this->queryFactory->newSelect();
     $select->cols(['*']);
@@ -27,7 +27,7 @@ class QueryBuilder
     return $sth->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function getAllPaginator($table, $setpaging, $page) 
+  public function getAllPaginator(string $table, $setpaging, $page) 
   {
     $select = $this->queryFactory->newSelect();
     $select->cols(['*'])
@@ -41,7 +41,7 @@ class QueryBuilder
     return $sth->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function getAllCount(String $table)
+  public function getAllCount(string $table)
   {
     $select = $this->queryFactory->newSelect();
     $select->cols(["COUNT(*) AS count"])
@@ -52,7 +52,7 @@ class QueryBuilder
     return (int) $sth->fetchColumn();
   }
 
-  public function getOneById( $table,  $id) 
+  public function getOneById(string $table,  int $id) 
   {
     $select = $this->queryFactory->newSelect();
     $select->cols(['*'])
@@ -67,7 +67,7 @@ class QueryBuilder
     return $sth->fetch(PDO::FETCH_ASSOC);
   }
 
-  public function getOneByEmail($table,  $email) 
+  public function getOneByEmail(string $table,  $email) 
   {
     $select = $this->queryFactory->newSelect();
     $select->cols(['*'])

@@ -3,12 +3,13 @@
 if( !session_id() ) @session_start();
 
 require '../vendor/autoload.php';
+
 use League\Plates\Engine;
 use Delight\Auth\Auth;
-use Illuminate\Contracts\Pagination\Paginator;
 use Tamtamchik\SimpleFlash\Flash;
 
 $builder = new DI\ContainerBuilder();
+
 $builder->addDefinitions([
   Engine::class => function() {
     return new Engine('../app/views');
@@ -49,31 +50,31 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
   $r->addRoute('GET', '/registration-form', ['App\controllers\RegistrationController', 'registration_form']);
 
-  $r->addRoute('GET', '/users/{id:\d+}', ['App\controllers\HomeController', 'users']);
+  $r->addRoute('GET', '/users/{id:\d+}', ['App\controllers\HomeController', 'show_users']);
 
   $r->addRoute('GET', '/logout', ['App\controllers\HomeController', 'logout']);
 
-  $r->addRoute('GET', '/status-user/{id:\d+}', ['App\controllers\HomeController', 'status_form']);
+  $r->addRoute('GET', '/status-user/{id:\d+}', ['App\controllers\HomeController', 'show_status_form']);
   $r->addRoute('POST', '/set-user-status', ['App\controllers\HomeController', 'set_user_status']);
 
-  $r->addRoute('GET', '/page-profile/{id:\d+}', ['App\controllers\HomeController', 'page_profile']);
+  $r->addRoute('GET', '/page-profile/{id:\d+}', ['App\controllers\HomeController', 'show_user_profile']);
 
   $r->addRoute('GET', '/media-form/{id:\d+}', ['App\controllers\MediaController', 'media_form']);
   $r->addRoute('POST', '/image', ['App\controllers\MediaController', 'download_image']);
 
   
-  $r->addRoute('GET', '/create-user-form', ['App\controllers\HomeController', 'create_user_form']);
+  $r->addRoute('GET', '/create-user-form', ['App\controllers\HomeController', 'show_create_user_form']);
   $r->addRoute('POST', '/create-user', ['App\controllers\HomeController', 'create_user']);
 
-  $r->addRoute('GET', '/edit-user-form/{id:\d+}', ['App\controllers\HomeController', 'edit_user_form']);
+  $r->addRoute('GET', '/edit-user-form/{id:\d+}', ['App\controllers\HomeController', 'show_edit_user_form']);
   $r->addRoute('POST', '/edit-user', ['App\controllers\HomeController', 'edit_user']);
 
-  $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'verification']);
+  $r->addRoute('GET', '/verification/{selector:.+}/{token:.+}', ['App\controllers\HomeController', 'verification']);
 
   // {id} must be a number (\d+)
   $r->addRoute('GET', '/user-delete/{id:\d+}', ['App\controllers\HomeController', 'user_delete']);
 
-  $r->addRoute('GET', '/security-user/{id:\d+}', ['App\controllers\HomeController', 'security_form']);
+  $r->addRoute('GET', '/security-user/{id:\d+}', ['App\controllers\HomeController', 'show_security_form']);
   $r->addRoute('POST', '/security', ['App\controllers\HomeController', 'security']);
     
   // The /{title} suffix is optional
@@ -104,7 +105,6 @@ switch ($routeInfo[0]) {
   case FastRoute\Dispatcher::FOUND:
       $handler = $routeInfo[1];
       $vars = $routeInfo[2];
-      
       
       $container->call($handler, $vars);
       break;

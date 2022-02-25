@@ -2,11 +2,6 @@
 
 namespace App\controllers;
 
-use App\exceptions\NotEnoughMoneyException;
-use App\exceptions\AccountIsBlockException;
-
-use League\Plates\Engine;
-use Delight\Auth\Auth;
 use App\Redirect;
 use App\controllers\Controller;
 use JasonGrimes\Paginator;
@@ -15,7 +10,7 @@ use App\File;
 class HomeController extends Controller 
 {
 
-  public function users(int $id) 
+  public function show_users(int $id) 
   {
     $itemsPerPage = 6;
     $currentPage = $id;
@@ -39,7 +34,7 @@ class HomeController extends Controller
     );
   }
 
-  public function page_profile(int $id) 
+  public function show_user_profile(int $id) 
   {
     $result = $this->db->getOneById('users', $id);
 
@@ -80,13 +75,13 @@ class HomeController extends Controller
     }
   }
 
-  public function status_form(int $id)
+  public function show_status_form(int $id)
   {
 
     if(!$this->is_Admin() and $this->auth->id() !== $id) {
       $this->flash->error('Вы не можете редактировать других пользователей');
       Redirect::to("/users/1");
-      exit();
+      exit;
     }
 
     $user = $this->db->getOneById('users', $id);
@@ -111,7 +106,7 @@ class HomeController extends Controller
     Redirect::to("/users/1");
   }
 
-  public function security_form(int $id)
+  public function show_security_form(int $id)
   {
     if(!$this->is_Admin() and $this->auth->id() !== $id) {
       $this->flash->error('Вы не можете редактировать других пользователей');
@@ -126,52 +121,58 @@ class HomeController extends Controller
         'title' => 'Security',
         'user' => $result,
         'login_state' => $this->login_state(),
+        'flash_output' => $this->flash->display()
       ]
     );
   }
 
   public function security()
   {
-
-    $this->auth->reconfirmPassword($_POST['password']);
-
     try {
       if ($this->auth->reconfirmPassword($_POST['password'])) {
         $this->auth->changeEmail($_POST['newEmail'], function ($selector, $token) {
             echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
-            echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-            echo '  For SMS, consider using a third-party service and a compatible SDK';
-            echo "<br>";
-            echo '<a href="/verification/' . urlencode($selector) . '/' . urlencode($token)'"></a>;
+
+            echo '<a href="/verification/' . urlencode($selector) . '/' . urlencode($token) . '">Email изменен</a>';
         });
 
         echo 'The change will take effect as soon as the new email address has been confirmed';
       }
       else {
-          echo 'We can\'t say if the user is who they claim to be';
+        $this->flash->error('Не верный пароль!');
+        Redirect::to("/security-user/$_POST[id]");
+        exit;
       }
     }
     catch (\Delight\Auth\InvalidEmailException $e) {
-        die('Invalid email address');
+      $this->flash->error('Не верный эл.адрес!');
+      Redirect::to("/security-user/$_POST[id]");
+      exit;
     }
     catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        die('Email address already exists');
+      $this->flash->error('Тако эл.адрес уже существует!');
+      Redirect::to("/security-user/$_POST[id]");
     }
     catch (\Delight\Auth\EmailNotVerifiedException $e) {
-        die('Account not verified');
+      $this->flash->error('Эл.адрес не подтвержден!');
+      Redirect::to("/security-user/$_POST[id]");
+      exit;
     }
     catch (\Delight\Auth\NotLoggedInException $e) {
-        die('Not logged in');
+      $this->flash->error('Вы не авторизированы!');
+      Redirect::to("/");
+      exit;
     }
     catch (\Delight\Auth\TooManyRequestsException $e) {
-        die('Too many requests');
+      $this->flash->error('Too many requests!');
+      Redirect::to("/users/1");
     }
   }
 
-  public function verification() 
+  public function verification($selector, $token) 
   {
     try {
-      $this->auth->confirmEmail($_GET['selector'], $_GET['token']);
+      $this->auth->confirmEmail($selector, $token);
 
       $this->flash->success('Email address has been verified');
       Redirect::to("/users/1");
@@ -190,7 +191,7 @@ class HomeController extends Controller
     }
   }
 
-  public function create_user_form() 
+  public function show_create_user_form() 
   {
     if(!$this->is_Admin()) 
     {
@@ -249,14 +250,12 @@ class HomeController extends Controller
 
   }
 
-
-  public function edit_user_form(int $id) 
+  public function show_edit_user_form(int $id) 
   { 
        
     if(!$this->is_Admin() and $this->auth->id() !== $id) {
       $this->flash->error('Вы не можете редактировать других пользователей');
       Redirect::to("/users/1");
-      exit;
     }
 
     $result = $this->db->getOneById('users', $id);
@@ -283,7 +282,6 @@ class HomeController extends Controller
     
     $this->flash->success('Профиль успешно обновлен!');
     Redirect::to("/users/1");
-    exit;
   }
 
   public function user_delete(int $id)
@@ -292,7 +290,6 @@ class HomeController extends Controller
     if(!$this->is_Admin() and $this->auth->id() !== $id) {
       $this->flash->error('Вы не можете редактировать других пользователей');
       Redirect::to("/users/1");
-      exit;
     }
 
     try {
@@ -303,44 +300,8 @@ class HomeController extends Controller
     catch (\Delight\Auth\UnknownIdException $e) {
       $this->flash->error('Пользователя не существует');
       Redirect::to("/users/1");
-      exit;
     }
 
-  }
-
-  // examples extenstions
-  public function about() 
-  {
-    try 
-    {
-      $this->test(105);
-    } 
-    catch (NotEnoughMoneyException $excepiton) 
-    {
-      flash()->error('Ваш баланс меньше чем 105' );
-    }
-     catch (AccountIsBlockException $excepiton) 
-    {
-      flash()->error($excepiton->getMessage());
-    }
-
-    echo $this->templates->render('page', 
-      [
-        'title' => 'About',
-      ]
-    );
-  }
-
-  function test($amount = 1) {
-    $start = 100;
-
-    // throw new AccountIsBlockException('Your account is blocked');
-  
-    if($amount > $start) {
-      throw new NotEnoughMoneyException('Your balance is less than '. $amount);
-    } else {
-      echo 'Выводим '. $amount . ' средств';
-    }
   }
 
 }

@@ -5,8 +5,8 @@
             <h1 class="subheader-title">
                 <i class='subheader-icon fal fa-lock'></i> Безопасность
             </h1>
-
         </div>
+        <?= $flash_output ?>
         <form action="/security" method="POST">
             <div class="row">
                 <div class="col-xl-6">
@@ -16,6 +16,7 @@
                                 <h2>Обновление эл. адреса и пароля</h2>
                             </div>
                             <div class="panel-content">
+                                <input type="hidden" name="id" value="<?=$user['id']?>">
                                 <!-- email -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Email</label>
